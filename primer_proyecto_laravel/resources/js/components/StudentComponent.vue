@@ -258,11 +258,11 @@
             },
             delStudent(Est) {
                 if (confirm(`¿Está seguro de eliminar el estudiante ${Est.name}?`)) {
-                    let method = 'DELETE';
-                    let url = `students/${Est.id}`;
+                    let method = 'DELETE',
+                        url = `students/${Est.id}`;
                     this.syncData(Est, method, url);
-                    let students = JSON.parse(localStorage.getItem('students'));
-                    let i = students.findIndex(x => x.idStudent === Est.idStudent);
+                    let students = JSON.parse(localStorage.getItem('students')),
+                        i = students.findIndex(x => x.idStudent === Est.idStudent);
                     students.splice(i, 1);
                     localStorage.setItem('students', JSON.stringify(students));
                     this.clearForm();
@@ -291,8 +291,5 @@
         created() {
             // this.getData();
         },
-        mounted() {
-            console.log('Ajua');
-        }
     }
 </script>
