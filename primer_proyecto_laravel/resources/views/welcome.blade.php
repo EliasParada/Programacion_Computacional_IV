@@ -43,8 +43,6 @@
                     <subjects-component v-bind:form="forms" ref="subjects" v-show="forms['subjects'].show" class="w-full"></subjects-component>
                     <inscriptions-component v-bind:form="forms" ref="inscriptions" v-show="forms['inscriptions'].show" class="w-full"></inscriptions-component>
                 </div>
-            </div>
-        </div>
 
         <script src="{{ asset('js/app.js') }}"></script>
     </body>

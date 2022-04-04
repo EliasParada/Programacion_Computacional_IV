@@ -85,7 +85,9 @@ class SubjectsController extends Controller
      */
     public function destroy($id, Subjects $subjects)
     {
-        $subjects->destroy($id);
+        $subject->destroy($id);
+===
+        $subject->destroy($id);
         return response()->json(['id' => $id], 200);
     }
 }
