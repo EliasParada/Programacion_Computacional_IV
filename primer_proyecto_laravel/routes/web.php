@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StudentsController;
+use App\Http\Controllers\SubjectsController;
+use App\Http\Controllers\InscriptionsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,4 +26,6 @@ Route::get('/', function () {
 
 Route::apiResources([
     'students' => StudentsController::class,
+    'subjects' => SubjectsController::class,
+    'inscriptions' => InscriptionsController::class,
 ]);

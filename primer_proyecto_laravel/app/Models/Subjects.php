@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Subjects extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['idSubject', 'name', 'teacher', 'day', 'start', 'finish', 'room'];
 }

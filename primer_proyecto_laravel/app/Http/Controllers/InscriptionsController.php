@@ -14,7 +14,7 @@ class InscriptionsController extends Controller
      */
     public function index()
     {
-        //
+        return Inscriptions::get();
     }
 
     /**
@@ -35,7 +35,9 @@ class InscriptionsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $id = Inscriptions::create($request->all())->id;
+        $idInscription = $request->idInscription;
+        return response()->json(['id' => $id, 'idInscription' => $idInscription], 200);
     }
 
     /**
@@ -46,7 +48,7 @@ class InscriptionsController extends Controller
      */
     public function show(Inscriptions $inscriptions)
     {
-        //
+        return $inscriptions;
     }
 
     /**
@@ -69,7 +71,10 @@ class InscriptionsController extends Controller
      */
     public function update(Request $request, Inscriptions $inscriptions)
     {
-        //
+        $id = $request->id;
+        $inscription = Inscriptions::find($id);
+        $inscription->update($request->all());
+        return response()->json(['id' => $id], 200);
     }
 
     /**
@@ -78,8 +83,9 @@ class InscriptionsController extends Controller
      * @param  \App\Models\Inscriptions  $inscriptions
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Inscriptions $inscriptions)
+    public function destroy($id, Inscriptions $inscriptions)
     {
-        //
+        $inscriptions->destroy($id);
+        return response()->json(['id' => $id], 200);
     }
 }

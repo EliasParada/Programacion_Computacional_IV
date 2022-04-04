@@ -35,6 +35,8 @@ window.close = (target) => {
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('students-component', require('./components/StudentComponent.vue').default);
+Vue.component('subjects-component', require('./components/SubjectComponent.vue').default);
+Vue.component('inscriptions-component', require('./components/InscriptionComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

@@ -123,7 +123,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="materia in materias" @click="showMateria(materia)" :key="materia.idMateria" class="text-black hover:bg-gray-400 duration-500">
+                        <tr v-for="materia in materias" @click="showMateria(materia)" :key="materia.idSubject" class="text-black hover:bg-gray-400 duration-500">
                             <td class="bg-gray-100 hover:bg-gray-200 duration-500 px-4 py-2">{{ materia.name}}</td>
                             <td class="bg-gray-100 hover:bg-gray-200 duration-500 border-l px-4 py-2">{{ materia.teacher }}</td>
                             <td class="bg-gray-100 hover:bg-gray-200 duration-500 border-l px-4 py-2">{{ materia.day }}</td>
@@ -155,7 +155,7 @@
                 days: ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'],
                 materia: {
                         accion: "nuevo",
-                        idMateria: '',
+                        idSubject: '',
                         name: '',
                         teacher: '',
                         day: '',
@@ -185,7 +185,15 @@
                     })
                     .catch(error => console.log(error));
                 }
-                this.materias = this.materias.filter(materia => materia.name.toLowerCase().includes(this.word.toLowerCase()));
+                this.materias = this.materias.filter(materia => {
+                    if ( this.word.length > 0 ) {
+                        if(materia.name.toLowerCase().includes(this.word.toLowerCase())) {
+                            return materia;
+                        }
+                    } else {
+                        return materia;
+                    }
+                });
             },
             async syncData(data='', method='POST', url='subjects') {
                 await axios({
@@ -195,26 +203,30 @@
                 })
                 .then(res => {
                     if (data.accion === 'nuevo') {
-                        let i = this.materias.findIndex(materia => materia.idMateria === res.data.idMateria);
+                        let i = this.materias.findIndex(materia => materia.idSubject === res.data.idSubject);
                         this.materias[i].id = res.data.id;
                         let materias = JSON.parse(localStorage.getItem('materias'));
                         materias[i].id = res.data.id;
                         localStorage.setItem('materias', JSON.stringify(materias));
                     }
                 })
+                .catch(err => {
+                    this.materia.showMsg = true;
+                    this.materia.msg = 'Error al guardar la materia';
+                });
             },
             saveChanges() {
                 this.getData();
                 let materia = this.materias || [],
                     method = 'PUT',
-                    url = `subjects/${this.materia.idMateria}`;
+                    url = `subjects/${this.materia.id}`;
                 if (this.materia.accion === 'nuevo') {
-                    this.materia.idMateria = getUniqueId('_mat_');
+                    this.materia.idSubject = getUniqueId('_mat_');
                     materia.push(this.materia);
                     method = 'POST';
                     url = 'subjects';
                 } else if (this.materia.accion === 'editar') {
-                    let i = materia.findIndex(x => x.idMateria === this.materia.idMateria);
+                    let i = materia.findIndex(x => x.idSubject === this.materia.idSubject);
                     materia[i] = this.materia;
                 }
                 localStorage.setItem('materias', JSON.stringify(materia));
@@ -231,10 +243,10 @@
             delMateria(Mat) {
                 if (confirm(`¿Está seguro de eliminar el estudiante ${Mat.name}?`)) {
                     let method = 'DELETE',
-                        url = `subjects/${Mat.idMateria}`;
+                        url = `subjects/${Mat.id}`;
                     this.syncData(Mat, method, url);
                     let materias = JSON.parse(localStorage.getItem('materias')),
-                        i = materias.findIndex(x => x.idMateria === Mat.idMateria);
+                        i = materias.findIndex(x => x.idSubject === Mat.idSubject);
                     materias.splice(i, 1);
                     localStorage.setItem('materias', JSON.stringify(materias));
                     this.clearForm();
@@ -242,6 +254,7 @@
                 }
             },
             clearForm() {
+                this.materia.idSubject = '';
                 this.materia.name = '';
                 this.materia.teacher = '';
                 this.materia.day = '';
