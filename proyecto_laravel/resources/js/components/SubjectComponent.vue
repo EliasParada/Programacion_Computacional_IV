@@ -178,6 +178,7 @@
                         {credentials: 'same-origin'})
                     .then(response => response.json())
                     .then(data => {
+                        console.log(data, this.materias);
                         data.map(materia => {
                             this.materias.push(materia);
                             localStorage.setItem('materias', JSON.stringify(this.materias));
@@ -271,7 +272,7 @@
             }
         },
         created() {
-            this.getData();
+            // this.getData();
         }
     }
 </script>

@@ -182,6 +182,7 @@
         methods: {
             getData() {
                 this.students = [];
+                console.log(localStorage.getItem('students') !== null);
                 if (localStorage.getItem('students') !== null) {
                     for (let i = 0; i < JSON.parse(localStorage.getItem('students')).length; i++) {
                         let data = JSON.parse(localStorage.getItem('students'))[i];
@@ -192,6 +193,7 @@
                         {credentials: 'same-origin'})
                     .then(response => response.json())
                     .then(data => {
+                        console.log(data, data.length, this.students);
                         data.map(student => {
                             this.students.push(student);
                             localStorage.setItem('students', JSON.stringify(this.students));
@@ -218,10 +220,10 @@
                 .then(res => {
                     if (data.accion == 'nuevo') {
                         let i = this.students.findIndex(student => student.idStudent == res.data.idStudent);
-                        this.students[i].id = res.data.id;
                         let students = JSON.parse(localStorage.getItem('students'));
                         students[i].id = res.data.id;
                         localStorage.setItem('students', JSON.stringify(students));
+                        this.students = students;
                     }
                     this.student.showMsg = true;
                     this.student.msg = 'Se ha sincronizado correctamente';

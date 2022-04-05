@@ -5513,9 +5513,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     });
 
                     _this.inscripciones[i].id = res.data.id;
-                    var inscripciones = JSON.parse(localStorage.getItem('inscripciones'));
-                    inscripciones[i].id = res.data.id;
-                    localStorage.setItem('inscripciones', JSON.stringify(inscripciones));
+
+                    var _inscripciones = JSON.parse(localStorage.getItem('inscripciones'));
+
+                    _inscripciones[i].id = res.data.id;
+                    localStorage.setItem('inscripciones', JSON.stringify(_inscripciones));
                     _this.id = res.data.id;
                     data.subjects.forEach(function (materia) {
                       var subject = {
@@ -5559,6 +5561,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var inscribir = this.inscripciones || [],
           method = 'PUT',
           url = "inscriptions/".concat(this.inscribir.id);
+      console.log(url);
 
       if (this.inscribir.accion === 'nuevo') {
         this.inscribir.idInscription = getUniqueId('_ins_');
@@ -5579,6 +5582,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         accion: this.inscribir.accion,
         idInscription: this.inscribir.idInscription,
         idStudent: this.inscribir.alumno.id,
+        id: this.inscribir.id,
         subjects: this.inscribir.materias,
         cycle: this.inscribir.cycle,
         number: this.inscribir.number
@@ -5592,29 +5596,43 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     eliminarInscrito: function eliminarInscrito(inscripcion) {
       if (confirm("Esta seguro de eliminar la inscripcion/es de ".concat(inscripcion.alumno.name, " a ").concat(this.inscribir.materias, "?"))) {
-        this.inscribir.idInscription = inscripcion.idInscription;
-        this.inscribir.accion = 'eliminar';
-        this.saveChanges();
+        var method = 'DELETE',
+            url = "inscriptions-details/".concat(inscribir.id);
+        this.syncData(inscripcion, method, url);
+
+        var _inscripciones2 = JSON.parse(localStorage.getItem('inscripciones')),
+            i = _inscripciones2.findIndex(function (x) {
+          return x.idInscription === inscripcion.idInscription;
+        });
+
+        _inscripciones2.splice(i, 1);
+
+        localStorage.setItem('inscripciones', JSON.stringify(_inscripciones2));
         this.clearForm();
+        this.getData();
       }
     },
     modificarInscripcion: function modificarInscripcion(inscripcion) {
       var _this3 = this;
 
+      console.log(inscripcion);
       this.inscribir.accion = 'editar';
       this.inscribir.showMsg = false;
       this.inscribir.msg = '';
       this.inscribir.number = inscripcion.number;
       this.inscribir.cycle = inscripcion.cycle;
       this.inscribir.idInscription = inscripcion.idInscription;
+      this.inscribir.id = inscripcion.id;
       this.inscribir.alumno = inscripcion.alumno;
       this.inscribir.materias = inscripcion.materias;
       this.getSubjects();
       this.materias = this.materias.filter(function (materia) {
         return !_this3.inscribir.materias.find(function (inscripcionMateria) {
-          return inscripcionMateria.idMateria === materia.idMateria;
+          return inscripcionMateria.idSubject === materia.idSubject;
         });
-      });
+      }); // this.inscribir = Object.assign({}, this.inscribir); 
+
+      this.inscribir = JSON.parse(JSON.stringify(this.inscribir));
     },
     toggleSubject: function toggleSubject(toggle, materia) {
       if (toggle) {
@@ -5643,45 +5661,86 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.inscripciones = [];
 
       if (localStorage.getItem('inscripciones') !== null) {
+        console.log('entro');
+
         for (var i = 0; i < JSON.parse(localStorage.getItem('inscripciones')).length; i++) {
           var data = JSON.parse(localStorage.getItem('inscripciones'))[i];
           this.inscripciones.push(data);
         }
       } else {
+        console.log('no entro');
         fetch('inscriptions', {
           credentials: 'same-origin'
         }).then(function (response) {
           return response.json();
         }).then(function (data) {
-          data.map(function (inscripcion) {
-            var inscripcionData = {
-              idInscription: inscripcion.idInscription,
-              id: inscripcion.id,
+          data.forEach(function (inscripcion) {
+            var sbjnames = inscripcion.sbjnames.split(','),
+                sbjIds = inscripcion.sbjIds.split(','),
+                sbjIdsSubject = inscripcion.sbjIdsSubject.split(','),
+                sbjNames = inscripcion.sbjNames.split(','),
+                sbjTeachers = inscripcion.sbjTeachers.split(','),
+                sbjDays = inscripcion.sbjDays.split(','),
+                sbjStarts = inscripcion.sbjStarts.split(','),
+                sbjFinishes = inscripcion.sbjFinishes.split(','),
+                sbjRooms = inscripcion.sbjRooms.split(','),
+                sbjCreated_ats = inscripcion.sbjCreated_ats.split(','),
+                sbjUpdated_ats = inscripcion.sbjUpdated_ats.split(','),
+                inscripcionData = {
+              showMsg: false,
+              msg: '',
+              accion: 'nuevo',
+              idInscription: inscripcion.insIdInscription,
+              id: inscripcion.insId,
+              idStudent: inscripcion.insIdStudent,
               alumno: {
-                idStudent: inscripcion.idStudent,
-                name: inscripcion.student.name,
-                last_name: inscripcion.last_name
+                showMsg: false,
+                msg: '',
+                accion: 'nuevo',
+                id: inscripcion.stdId,
+                idStudent: inscripcion.stdIdsStudent,
+                name: inscripcion.stdName,
+                last_name: inscripcion.stdLastName,
+                code: inscripcion.stdCode,
+                birth: inscripcion.stdBirth,
+                phone: inscripcion.stdPhone,
+                email: inscripcion.stdEmail,
+                address: inscripcion.stdAddress,
+                dui: inscripcion.astDui,
+                create_at: inscripcion.stdCreateAt,
+                update_at: inscripcion.stdUpdateAt
               },
-              cycle: inscripcion.number,
-              number: inscripcion.cycle,
-              materias: inscripcion.subjects.split(',').map(function (materia) {
+              cycle: inscripcion.insCycle,
+              number: inscripcion.insNumber,
+              materias: inscripcion.sbjIds.split(',').map(function (sbjId, index) {
                 return {
-                  id: materia.id,
-                  idSubject: materia.idSubject,
-                  name: materia.split('-')[1]
+                  accion: "nuevo",
+                  idMateria: sbjIds[index],
+                  idSubject: sbjIdsSubject[index],
+                  name: sbjnames[index],
+                  nameSubject: sbjNames[index],
+                  teacher: sbjTeachers[index],
+                  day: sbjDays[index],
+                  start: sbjStarts[index],
+                  finish: sbjFinishes[index],
+                  room: sbjRooms[index],
+                  created_at: sbjCreated_ats[index],
+                  updated_at: sbjUpdated_ats[index]
                 };
               }),
-              code: inscripcion.code
+              code: inscripcion.code,
+              created_at: inscripcion.insCreateAt,
+              updated_at: inscripcion.insUpdateAt
             };
-            console.log(inscripcionData);
 
             _this4.inscripciones.push(inscripcionData);
 
             localStorage.setItem('inscripciones', JSON.stringify(_this4.inscripciones));
           });
         })["catch"](function (error) {
-          _this4.inscripcion.showMsg = true;
-          _this4.inscripcion.msg = 'No se pudo obtener la informacion';
+          console.log(error);
+          _this4.inscribir.showMsg = true;
+          _this4.inscribir.msg = 'No se pudo obtener la informacion';
         });
       }
 
@@ -5725,23 +5784,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           return response.json();
         }).then(function (data) {
           data.map(function (alumno) {
-            var inscripciones = _this5.inscripciones || [];
+            _this5.alumnos.push(alumno);
+
+            localStorage.setItem('students', JSON.stringify(_this5.alumnos));
             var inscrito = inscripciones.findIndex(function (x) {
-              return x.alumno.idStudent === alumno.idStudent;
+              return x.idStudent === alumno.idStudent;
             });
 
             if (inscrito === -1) {
               _this5.alumnos.push(alumno);
             }
-
-            _this5.alumnos.push(alumno);
-
-            localStorage.setItem('students', JSON.stringify(_this5.alumnos));
           });
-          localStorage.setItem('students', JSON.stringify(_this5.alumnos));
         })["catch"](function (error) {
-          _this5.inscripcion.showMsg = true;
-          _this5.inscripcion.msg = 'No se pudo obtener la informacion';
+          _this5.inscribir.showMsg = true;
+          _this5.inscribir.msg = 'No se pudo obtener la informacion';
         });
       }
     },
@@ -5767,8 +5823,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             localStorage.setItem('materias', JSON.stringify(_this6.materias));
           });
         })["catch"](function (error) {
-          _this6.inscripcion.showMsg = true;
-          _this6.inscripcion.msg = 'No se pudo obtener la informacion';
+          _this6.inscribir.showMsg = true;
+          _this6.inscribir.msg = 'No se pudo obtener la informacion';
         });
       }
     },
@@ -5783,13 +5839,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       return close;
     }(function (target) {
+      this.clearForm();
       close(target);
     })
   },
-  created: function created() {
-    this.getData();
-    this.getSubjects();
-    this.getStudents();
+  created: function created() {// this.getData();
+    // this.getSubjects();
+    // this.getStudents();
   }
 });
 
@@ -5999,6 +6055,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this = this;
 
       this.students = [];
+      console.log(localStorage.getItem('students') !== null);
 
       if (localStorage.getItem('students') !== null) {
         for (var i = 0; i < JSON.parse(localStorage.getItem('students')).length; i++) {
@@ -6011,6 +6068,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }).then(function (response) {
           return response.json();
         }).then(function (data) {
+          console.log(data, data.length, _this.students);
           data.map(function (student) {
             _this.students.push(student);
 
@@ -6055,10 +6113,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                       return student.idStudent == res.data.idStudent;
                     });
 
-                    _this2.students[i].id = res.data.id;
                     var students = JSON.parse(localStorage.getItem('students'));
                     students[i].id = res.data.id;
                     localStorage.setItem('students', JSON.stringify(students));
+                    _this2.students = students;
                   }
 
                   _this2.student.showMsg = true;
@@ -6359,6 +6417,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }).then(function (response) {
           return response.json();
         }).then(function (data) {
+          console.log(data, _this.materias);
           data.map(function (materia) {
             _this.materias.push(materia);
 
@@ -6494,8 +6553,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       close(target);
     })
   },
-  created: function created() {
-    this.getData();
+  created: function created() {// this.getData();
   }
 });
 
@@ -30309,11 +30367,11 @@ var render = function () {
                         _vm.inscribir.accion == "editar"
                           ? _c("span", [
                               _vm._v(
-                                _vm._s(_vm.inscribir.last_name) +
+                                _vm._s(_vm.inscribir.alumno.last_name) +
                                   ", " +
-                                  _vm._s(_vm.inscribir.name) +
+                                  _vm._s(_vm.inscribir.alumno.name) +
                                   " - " +
-                                  _vm._s(_vm.inscribir.code)
+                                  _vm._s(_vm.inscribir.alumno.code)
                               ),
                             ])
                           : _vm._e(),

@@ -38,7 +38,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                         </svg>
                         <div class="text-gray-700 text-sm font-bold h-full w-full px-3 py-2 rounded-r-lg bg-white" :class="{'bg-gray-100': inscribir.accion == 'nuevo'}">
-                            <span v-if="inscribir.accion == 'editar'">{{ inscribir.last_name }}, {{ inscribir.name }} - {{ inscribir.code }}</span>
+                            <span v-if="inscribir.accion == 'editar'">{{ inscribir.alumno.last_name }}, {{ inscribir.alumno.name }} - {{ inscribir.alumno.code }}</span>
                         </div>
                     </div>
                     <div class="w-full md:w-1/4 mb-1 px-4 flex items-center">
@@ -245,6 +245,7 @@
                 let inscribir = this.inscripciones || [],
                     method = 'PUT',
                     url = `inscriptions/${this.inscribir.id}`;
+                    console.log(url);
                 if (this.inscribir.accion === 'nuevo') {
                     this.inscribir.idInscription = getUniqueId('_ins_');
                     this.inscribir.alumno = this.alumnos.find(alumno => alumno.idStudent === this.inscribir.alumno);
@@ -259,6 +260,7 @@
                     accion: this.inscribir.accion,
                     idInscription: this.inscribir.idInscription,
                     idStudent: this.inscribir.alumno.id,
+                    id: this.inscribir.id,
                     subjects: this.inscribir.materias,
                     cycle: this.inscribir.cycle,
                     number: this.inscribir.number
@@ -273,23 +275,32 @@
             },
             eliminarInscrito(inscripcion) {
                 if (confirm(`Esta seguro de eliminar la inscripcion/es de ${inscripcion.alumno.name} a ${this.inscribir.materias}?`)) {
-                    this.inscribir.idInscription = inscripcion.idInscription;
-                    this.inscribir.accion = 'eliminar';
-                    this.saveChanges();
+                    let method = 'DELETE',
+                        url = `inscriptions-details/${inscribir.id}`;
+                    this.syncData(inscripcion, method, url);
+                    let inscripciones = JSON.parse(localStorage.getItem('inscripciones')),
+                        i = inscripciones.findIndex(x => x.idInscription === inscripcion.idInscription);
+                    inscripciones.splice(i, 1);
+                    localStorage.setItem('inscripciones', JSON.stringify(inscripciones));
                     this.clearForm();
+                    this.getData();
                 }
             },
             modificarInscripcion(inscripcion) {
+                console.log(inscripcion);
                 this.inscribir.accion = 'editar';
                 this.inscribir.showMsg = false;
                 this.inscribir.msg = '';
                 this.inscribir.number = inscripcion.number;
                 this.inscribir.cycle = inscripcion.cycle;
                 this.inscribir.idInscription = inscripcion.idInscription;
+                this.inscribir.id = inscripcion.id;
                 this.inscribir.alumno = inscripcion.alumno;
                 this.inscribir.materias = inscripcion.materias;
                 this.getSubjects();
-                this.materias = this.materias.filter(materia => !this.inscribir.materias.find(inscripcionMateria => inscripcionMateria.idMateria === materia.idMateria));
+                this.materias = this.materias.filter(materia => !this.inscribir.materias.find(inscripcionMateria => inscripcionMateria.idSubject === materia.idSubject));
+                // this.inscribir = Object.assign({}, this.inscribir); 
+                this.inscribir = JSON.parse(JSON.stringify(this.inscribir));
             },
             toggleSubject(toggle, materia) {
                 if (toggle) {
@@ -315,32 +326,40 @@
             getData() {
                 this.inscripciones = [];
                 if (localStorage.getItem('inscripciones') !== null) {
+                    console.log('entro');
                     for (let i = 0; i < JSON.parse(localStorage.getItem('inscripciones')).length; i++) {
                         let data = JSON.parse(localStorage.getItem('inscripciones'))[i];
                         this.inscripciones.push(data);
                     }
                 } else {
+                    console.log('no entro');
                     fetch('inscriptions',
                         {credentials: 'same-origin'})
                     .then(response => response.json())
                     .then(data => {
-                        data.map(inscripcion => {
-                            let sbjnames = data.sbjnames.split(','),
-                                sbjIds = data.sbjIds.split(','),
-                                sbjIdsSubject = data.sbjIdsSubject.split(','),
-                                sbjNames = data.sbjNames.split(','),
-                                sbjTeachers = data.sbjTeachers.split(','),
-                                sbjDays = data.sbjDays.split(','),
-                                sbjStarts = data.sbjStarts.split(','),
-                                sbjFinishes = data.sbjFinishes.split(','),
-                                sbjRooms = data.sbjRooms.split(','),
-                                sbjCreated_ats = data.sbjCreated_ats.split(','),
-                                sbjUpdated_ats = data.sbjUpdated_ats.split(','),
+                        data.forEach(inscripcion => {
+                            let sbjnames = inscripcion.sbjnames.split(','),
+                                sbjIds = inscripcion.sbjIds.split(','),
+                                sbjIdsSubject = inscripcion.sbjIdsSubject.split(','),
+                                sbjNames = inscripcion.sbjNames.split(','),
+                                sbjTeachers = inscripcion.sbjTeachers.split(','),
+                                sbjDays = inscripcion.sbjDays.split(','),
+                                sbjStarts = inscripcion.sbjStarts.split(','),
+                                sbjFinishes = inscripcion.sbjFinishes.split(','),
+                                sbjRooms = inscripcion.sbjRooms.split(','),
+                                sbjCreated_ats = inscripcion.sbjCreated_ats.split(','),
+                                sbjUpdated_ats = inscripcion.sbjUpdated_ats.split(','),
                                 inscripcionData = {
+                                    showMsg: false,
+                                    msg: '',
+                                    accion: 'nuevo',
                                     idInscription: inscripcion.insIdInscription,
                                     id: inscripcion.insId,
                                     idStudent: inscripcion.insIdStudent,
                                     alumno: {
+                                        showMsg: false,
+                                        msg: '',
+                                        accion: 'nuevo',
                                         id: inscripcion.stdId,
                                         idStudent: inscripcion.stdIdsStudent,
                                         name: inscripcion.stdName,
@@ -358,6 +377,7 @@
                                     number: inscripcion.insNumber,
                                     materias: inscripcion.sbjIds.split(',').map((sbjId, index) => {
                                         return {
+                                            accion: "nuevo",
                                             idMateria: sbjIds[index],
                                             idSubject: sbjIdsSubject[index],
                                             name: sbjnames[index],
@@ -375,14 +395,14 @@
                                     created_at: inscripcion.insCreateAt,
                                     updated_at: inscripcion.insUpdateAt
                                 };
-                            console.log(inscripcionData);
                             this.inscripciones.push(inscripcionData);
                             localStorage.setItem('inscripciones', JSON.stringify(this.inscripciones));
                         });
                     })
                     .catch(error => {
-                        this.inscripcion.showMsg = true;
-                        this.inscripcion.msg = 'No se pudo obtener la informacion';
+                        console.log(error);
+                        this.inscribir.showMsg = true;
+                        this.inscribir.msg = 'No se pudo obtener la informacion';
                     });
                 }
                 this.inscripciones.filter(inscripcion => {
@@ -414,19 +434,17 @@
                     .then(response => response.json())
                     .then(data => {
                         data.map(alumno => {
-                            let inscripciones = this.inscripciones || [];
-                            let inscrito = inscripciones.findIndex(x => x.alumno.idStudent === alumno.idStudent);
+                            this.alumnos.push(alumno);
+                            localStorage.setItem('students', JSON.stringify(this.alumnos));
+                            let inscrito = inscripciones.findIndex(x => x.idStudent === alumno.idStudent);
                             if (inscrito === -1) {
                                 this.alumnos.push(alumno);
                             }
-                            this.alumnos.push(alumno);
-                            localStorage.setItem('students', JSON.stringify(this.alumnos));
                         });
-                        localStorage.setItem('students', JSON.stringify(this.alumnos));
                     })
                     .catch(error => {
-                        this.inscripcion.showMsg = true;
-                        this.inscripcion.msg = 'No se pudo obtener la informacion';
+                        this.inscribir.showMsg = true;
+                        this.inscribir.msg = 'No se pudo obtener la informacion';
                     });
                 }
             },
@@ -448,20 +466,20 @@
                         });
                     })
                     .catch(error => {
-                        this.inscripcion.showMsg = true;
-                        this.inscripcion.msg = 'No se pudo obtener la informacion';
+                        this.inscribir.showMsg = true;
+                        this.inscribir.msg = 'No se pudo obtener la informacion';
                     });
                 }
             },
             close(target) {
-
+                this.clearForm();
                 close(target);
             }
         },
         created() {
-            this.getData();
-            this.getSubjects();
-            this.getStudents();
+            // this.getData();
+            // this.getSubjects();
+            // this.getStudents();
         }
     }
 </script>
