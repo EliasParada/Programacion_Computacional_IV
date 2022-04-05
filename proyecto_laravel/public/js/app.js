@@ -5579,7 +5579,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         accion: this.inscribir.accion,
         idInscription: this.inscribir.idInscription,
         idStudent: this.inscribir.alumno.id,
-        subjects: this.inscribir.materias
+        subjects: this.inscribir.materias,
+        cycle: this.inscribir.cycle,
+        number: this.inscribir.number
       };
       this.syncData(inscription, method, url);
       localStorage.setItem('inscripciones', JSON.stringify(inscribir));
@@ -5664,7 +5666,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               number: inscripcion.cycle,
               materias: inscripcion.subjects.split(',').map(function (materia) {
                 return {
-                  idMateria: materia.id,
+                  id: materia.id,
+                  idSubject: materia.idSubject,
                   name: materia.split('-')[1]
                 };
               }),

@@ -260,6 +260,8 @@
                     idInscription: this.inscribir.idInscription,
                     idStudent: this.inscribir.alumno.id,
                     subjects: this.inscribir.materias,
+                    cycle: this.inscribir.cycle,
+                    number: this.inscribir.number
                 };
                 this.syncData(inscription, method, url);
                 localStorage.setItem('inscripciones', JSON.stringify(inscribir));
@@ -323,25 +325,56 @@
                     .then(response => response.json())
                     .then(data => {
                         data.map(inscripcion => {
-                            let inscripcionData = {
-                                idInscription: inscripcion.idInscription,
-                                id: inscripcion.id,
-                                alumno: {
-                                    idStudent: inscripcion.idStudent,
-                                    name: inscripcion.student.name,
-                                    last_name: inscripcion.last_name
-                                },
-                                cycle: inscripcion.number,
-                                number: inscripcion.cycle,
-                                materias: inscripcion.subjects.split(',').map(materia => {
-                                    return {
-                                        id: materia.id,
-                                        idSubject: materia.idSubject,
-                                        name: materia.split('-')[1]
-                                    };
-                                }),
-                                code: inscripcion.code,
-                            };
+                            let sbjnames = data.sbjnames.split(','),
+                                sbjIds = data.sbjIds.split(','),
+                                sbjIdsSubject = data.sbjIdsSubject.split(','),
+                                sbjNames = data.sbjNames.split(','),
+                                sbjTeachers = data.sbjTeachers.split(','),
+                                sbjDays = data.sbjDays.split(','),
+                                sbjStarts = data.sbjStarts.split(','),
+                                sbjFinishes = data.sbjFinishes.split(','),
+                                sbjRooms = data.sbjRooms.split(','),
+                                sbjCreated_ats = data.sbjCreated_ats.split(','),
+                                sbjUpdated_ats = data.sbjUpdated_ats.split(','),
+                                inscripcionData = {
+                                    idInscription: inscripcion.insIdInscription,
+                                    id: inscripcion.insId,
+                                    idStudent: inscripcion.insIdStudent,
+                                    alumno: {
+                                        id: inscripcion.stdId,
+                                        idStudent: inscripcion.stdIdsStudent,
+                                        name: inscripcion.stdName,
+                                        last_name: inscripcion.stdLastName,
+                                        code: inscripcion.stdCode,
+                                        birth: inscripcion.stdBirth,
+                                        phone: inscripcion.stdPhone,
+                                        email: inscripcion.stdEmail,
+                                        address: inscripcion.stdAddress,
+                                        dui: inscripcion.astDui,
+                                        create_at: inscripcion.stdCreateAt,
+                                        update_at: inscripcion.stdUpdateAt
+                                    },
+                                    cycle: inscripcion.insCycle,
+                                    number: inscripcion.insNumber,
+                                    materias: inscripcion.sbjIds.split(',').map((sbjId, index) => {
+                                        return {
+                                            idMateria: sbjIds[index],
+                                            idSubject: sbjIdsSubject[index],
+                                            name: sbjnames[index],
+                                            nameSubject: sbjNames[index],
+                                            teacher: sbjTeachers[index],
+                                            day: sbjDays[index],
+                                            start: sbjStarts[index],
+                                            finish: sbjFinishes[index],
+                                            room: sbjRooms[index],
+                                            created_at: sbjCreated_ats[index],
+                                            updated_at: sbjUpdated_ats[index]
+                                        };
+                                    }),
+                                    code: inscripcion.code,
+                                    created_at: inscripcion.insCreateAt,
+                                    updated_at: inscripcion.insUpdateAt
+                                };
                             console.log(inscripcionData);
                             this.inscripciones.push(inscripcionData);
                             localStorage.setItem('inscripciones', JSON.stringify(this.inscripciones));
