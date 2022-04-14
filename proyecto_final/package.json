@@ -16,5 +16,9 @@
         "lodash": "^4.17.19",
         "postcss": "^8.4.12",
         "tailwindcss": "^3.0.23"
+    },
+    "dependencies": {
+        "ui": "^0.2.4",
+        "vue": "^3.2.32"
     }
 }

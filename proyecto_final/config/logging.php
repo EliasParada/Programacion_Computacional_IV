@@ -52,6 +52,7 @@ return [
             'driver' => 'stack',
             'channels' => ['single'],
             'ignore_exceptions' => false,
+            'name' => 'name-of-logger',
         ],
 
         'single' => [
