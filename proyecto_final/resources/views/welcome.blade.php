@@ -6,27 +6,26 @@
         <title>App Emotiva :v</title>
         <link rel="stylesheet" href="{{asset('css/app.css')}}">
     </head>
-    <body class="antialiased dark">
-        <!-- @if (Route::has('login'))
-                <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
-                    @auth
-                        <a href="{{ url('/home') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Home</a>
-                    @else
-                        <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Log in</a>
+    <body class="antialiased">
+        <div id="app" :class="{'dark': dark}">
+            <div class="bg-blue-400 dark:bg-slate-800 w-full text-center text-black dark:text-white p-4 flex flex-wrap space-x-4">
+                <h1 class="text-5xl">App Emotiva</h1>
+                @include('partials.nav')
+                <a href="#" class="text-white hover:text-orange-500" @click="dark = !dark">
+                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                </a>
+            </div>
 
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 dark:text-gray-500 underline">Register</a>
-                        @endif
-                    @endauth
-                </div>
-            @endif -->
-        
-        <div class="bg-red-400 dark:bg-orange-400 w-full text-center text-white p-4 flex flex-wrap space-x-4">
-            <h1 class="text-5xl">App Emotiva</h1>
-            @include('partials.nav')
+            @if (Auth::check())
+                <notes-component v-bind:form="navs" ref="notes" v-if="navs['notes'].open" :user="{{ Auth::user() }}"></notes-component>
+                <profiles-component v-bind:form="navs" ref="profiles" v-if="navs['profiles'].open" :user="{{ Auth::user() }}"></profiles-component>
+            @else
+                <notes-component v-bind:form="navs" ref="notes" v-if="navs['notes'].open"></notes-component>
+            @endif
         </div>
 
-        {{ Auth::user() }}
-
+        <script src="{{asset('js/app.js')}}"></script>
     </body>
 </html>

@@ -3,6 +3,7 @@
     <a href="/login">login</a>
     <a href="/register">register</a>
 @else
+    <a href="#" onclick="openNav('profiles')" class="">Buscar</a>
     <a href="/dashboard">dashboard</a>
     <div class="dropdown">
         <div class="dropbtn">
@@ -18,3 +19,4 @@
         </div>
     </div>
 @endguest
+<a href="#" onclick="openNav('notes')" class="">Notas</a>

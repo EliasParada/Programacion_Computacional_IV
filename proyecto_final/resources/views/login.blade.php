@@ -45,6 +45,7 @@
                     </p>
                     <p class="text-center text-blue-500 text-xs">
                         <a href="/login/google">Login with Google</a>
+                    </p>
                 </div>
 
             </form>

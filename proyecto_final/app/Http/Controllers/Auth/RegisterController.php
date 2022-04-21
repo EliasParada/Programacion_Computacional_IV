@@ -17,19 +17,16 @@ class RegisterController extends Controller
     }
     public function register(RegisterRequest $request)
     {
+        $request['termsandconditions'] = $request->filled('termsandconditions');
         $credentials = $request->validated();
         $credentials['password'] = bcrypt($credentials['password']);
         $user = User::create($credentials);
-        Auth::login($user);
-        // return redirect()->route('home')->with('success', 'You are logged in!');
-        // event(new Registered($user = User::create($credentials)));
-        // $this->guard()->login($user);
-        // return $this->registered($request, $user)
-        //     ?: redirect($this->redirectPath());
         if ($user) {
             event(new Registered($user));
             return redirect('/')->with('success', 'You are registered!');
         }
         return redirect('/login')->with('error', 'You are not registered!');
     }
+
+    
 }

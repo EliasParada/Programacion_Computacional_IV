@@ -12,23 +12,12 @@
             @include('partials.nav')
         </div>
 
-        <div class="flex flex-wrap justify-center" id="app">
-            <form method="post" class="w-full max-w-sm">
+        <div class="flex flex-wrap justify-center">
+            <form method="post" class="w-full max-w-sm" action="/register/google">
                 @csrf
                 <div class="flex flex-col -mx-3 mb-6"><label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">Avatar</label>
-                    <camera-component class="mx-auto"></camera-component>
                     <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-first-name" autofocus type="file" required name="avatar" accept="image/*">
                     @error('avatar')
-                        <p class="text-red-500 text-center">{{$message}}</p>
-                    @enderror
-                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-last-name">Name</label>
-                    <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-last-name" type="text" placeholder="Jane Doe" name="name" required>
-                    @error('name')
-                        <p class="text-red-500 text-center">{{$message}}</p>
-                    @enderror
-                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-last-name">Email</label>
-                    <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-last-name" type="email" placeholder="jane_doe@gmail.com" name="email" required>
-                    @error('email')
                         <p class="text-red-500 text-center">{{$message}}</p>
                     @enderror
                     <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-last-name">Password</label>
@@ -42,28 +31,25 @@
                         <p class="text-red-500 text-center">{{$message}}</p>
                     @enderror
                     <div class="flex flex-col items-center">
-                        <input class="mr-1" type="checkbox" name="termsandconditions" id="termsandconditions" required>
-                        <label class="text-sm text-gray-600" for="termsandconditions">I agree to the <a href="#" class="text-blue-500">terms and conditions</a>.</label>
+                        <input class="mr-1" type="checkbox" name="terms&conditions" id="terms&conditions" required>
+                        <label class="text-sm text-gray-600" for="terms&conditions">I agree to the <a href="#" class="text-blue-500">terms and conditions</a>.</label>
                     </div>
-                    @error('termsandconditions')
+                    @error('terms&conditions')
                         <p class="text-red-500 text-center">{{$message}}</p>
                     @enderror
-                    <div class="flex items-center justify-between">
+                    @if(session('userLogin'))
+                        <input type="hidden" name="name" value="{{session('userLogin')->getName()}}">
+                        <input type="hidden" name="email" value="{{session('userLogin')->getEmail()}}">
                         <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
                             Register
                         </button>
-                        <a class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="/login">
-                            Already have an account?
-                        </a>    
-                        <p class="text-center text-blue-500 text-xs">
-                            <a href="/login/google">Login with Google</a>
-                        </p>
-                    </div>
+                    @else
+                        <a href="/login/google" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            Try Again
+                        </a>
+                    @endif
                 </div>
             </form>
         </div>
-
-        
-        <script src="{{asset('js/app.js')}}"></script>
     </body>
 </html>

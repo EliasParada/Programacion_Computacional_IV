@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\RegisterRequest;
 
 class GoogleController extends Controller
 {
@@ -18,16 +19,13 @@ class GoogleController extends Controller
     public function handleGoogleCallback()
     {
         $userLogin = Socialite::driver('google')->user();
-        $user = User::updateOrCreate(
-            ['email' => $userLogin->getEmail()],
-            ['refresh_token' => $userLogin->token,
-            'name' => $userLogin->getName(),
-            'password' => '$2y$10$psC69IU31VeMOKUOEKw89.FKEWU/gJVgUw3nYuYQdE91RiOCJczWG',
-            // Verificar el email
-            ]
-        );
-        Auth::login($user);
-        return redirect('/');
+        $user = User::where('email', $userLogin->getEmail())->first();
+        if ($user) {
+            Auth::login($user);
+            return redirect('/dashboard');
+        } else {
+            return redirect('/google-register')->with('userLogin', $userLogin);
+        }
     }
     public function logout(Request $request)
     {
@@ -36,5 +34,15 @@ class GoogleController extends Controller
 
         $request->session()->invalidate();
         return redirect('/');
+    }
+    public function register(RegisterRequest $request)
+    {
+        $credentials = $request->validated();
+        $credentials['password'] = bcrypt($credentials['password']);
+        $user = User::create($credentials);
+        $user->email_verified_at = now();
+        $user->save();
+        Auth::login($user);
+        return redirect('/')->with('<p class="text-green-500">You are logged in!</p>');
     }
 }
