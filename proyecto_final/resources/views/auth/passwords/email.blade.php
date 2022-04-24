@@ -18,8 +18,7 @@
                     <p>A fresh verification link has been sent to your email address.</p>
                 </div>
             @endif
-
-            <form class="w-full max-w-sm" method="POST" action="/password/reset">
+            <form class="w-full max-w-sm" method="POST" action="{{ route('password.email') }}">
                 @csrf
                 <div class="flex flex-col -mx-3 mb-6">
                     <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">Email</label>

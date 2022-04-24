@@ -18,7 +18,7 @@ Route::view('login', 'login')->name('login')->middleware('guest');
 Route::view('dashboard', 'dashboard')->middleware(['auth', 'verified']);
 Route::view('register', 'register')->name('register')->middleware('guest');
 Route::view('google-register', 'google-register')->middleware('guest');
-Route::view('reset', 'auth.password-reset');
+Route::view('reset', 'auth.passwords.email');
 Auth::routes(['verify' => true]);
 
 Route::post('/login', [LoginController::class, 'login']);
@@ -26,7 +26,9 @@ Route::post('/logout', [LoginController::class, 'logout']);
 Route::post('/register', [RegisterController::class, 'register']);
 // Por hacer, forgot password, reset password, etc.
 // Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail']);
-Route::post('/password/reset', [ResetPasswordController::class, 'resetPassword']);
+Route::get('/password/reset', 'App\Http\Controllers\Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
+Route::post('/password/email', 'App\Http\Controllers\Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+Route::post('/password/reset/{token}', 'App\Http\Controllers\Auth\ResetPasswordController@showResetForm')->name('password.reset');
 Route::post('/register/google', [GoogleController::class, 'register']);
 
 

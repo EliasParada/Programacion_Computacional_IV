@@ -41,7 +41,7 @@
                         </button>
                     </div>
                     <p class="text-center text-blue-500 text-xs">
-                        <a href="/reset">Forgot password?</a>
+                        <a href="{{ route('password.request') }}">Forgot Your Password?</a>
                     </p>
                     <p class="text-center text-blue-500 text-xs">
                         <a href="/login/google">Login with Google</a>
