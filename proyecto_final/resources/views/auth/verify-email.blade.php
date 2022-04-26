@@ -7,10 +7,7 @@
         <link rel="stylesheet" href="{{asset('css/app.css')}}">
     </head>
     <body class="antialiased dark">
-        <div class="bg-cyan-700 dark:bg-blue-600 w-full text-center text-white p-4 flex flex-wrap space-x-4">
-            <h1 class="text-5xl">Email Verification</h1>
             @include('partials.nav')
-        </div>
 
         <div class="flex flex-wrap justify-center">
              @if (session('resent'))

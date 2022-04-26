@@ -18,6 +18,10 @@
                 </a>
             </div>
 
+            @if (session('success'))
+                <div class="bg-blue-400 dark:bg-slate-800 w-full text-center text-white p-4 flex flex-wrap space-x-4">{{ session('success') }}</div>
+            @endif
+
             @if (Auth::check())
                 <notes-component v-bind:form="navs" ref="notes" v-if="navs['notes'].open" :user="{{ Auth::user() }}"></notes-component>
                 <profiles-component v-bind:form="navs" ref="profiles" v-if="navs['profiles'].open" :user="{{ Auth::user() }}"></profiles-component>

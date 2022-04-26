@@ -56,11 +56,24 @@ const app = new Vue({
         navs: {
             notes: {open: false},
             profiles: {open: false},
+            camera: {open: false},
         },
+        front: '',
+        profile: '',
     },
     methods: {
         
     },
+    beforeMount() {
+        this.$root.$on('images', (value) => {
+            this.front = value.front;
+            this.profile = value.profile;
+            this.navs.camera.open = false;
+        });
+        this.$root.$on('close', (value) => {
+            this.navs[value].open = false;
+        });
+    }
     // watch: {
     //     dark: (val) => {
     //     }

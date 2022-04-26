@@ -27,14 +27,6 @@ class GoogleController extends Controller
             return redirect('/google-register')->with('userLogin', $userLogin);
         }
     }
-    public function logout(Request $request)
-    {
-        session('g_token', '');
-        $this->guard()->logout();
-
-        $request->session()->invalidate();
-        return redirect('/');
-    }
     public function register(RegisterRequest $request)
     {
         $credentials = $request->validated();
