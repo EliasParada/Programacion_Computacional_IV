@@ -1,17 +1,22 @@
 <div id="app">
-    <div class="bg-first-500 dark:bg-first-900 w-full text-center text-white p-4 flex flex-wrap space-x-6">
-        <a href="/" class="flex-1 text-center text-white hover:text-blue-200">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="hover:stroke-slate-500 mr-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+    <div class="bg-first-900 dark:bg-first-900 w-full text-center justify-start text-white p-4 mb-4 flex flex-wrap space-x-6">
+        <a href="/" class="text-center text-white hover:text-first-500">
+            {{ config('app.name', 'FeelsGood') }}
         </a>
-        <a href="#" onclick="openNav('notes')" class="flex-1 text-center text-white hover:text-blue-200">Notas</a>
+        <a href="#" onclick="openNav('notes')" class="text-center text-white hover:text-first-500">Notas</a>
         @guest
-            <a href="/login" class="flex-1 text-center text-white hover:text-blue-200">Ingresar</a>
-            <a href="/register" class="flex-1 text-center text-white hover:text-blue-200">Registrarse</a>
+            <a href="/login" class="text-center text-white hover:text-first-500">Ingresar</a>
+            <a href="/register" class="text-center text-white hover:text-first-500">Registrarse</a>
         @else
-            <a href="#" onclick="openNav('profiles')" class="">Buscar</a>
-            <div class="dropdown">
+            <a href="#" onclick="openNav('profiles')" class="text-center text-white hover:text-first-500">Buscar</a>
+            <a href="#" onclick="openNav('requests')" class="text-center text-white hover:text-first-500">Solicitudes</a>
+            <!-- Si is_request mostrar un circulo usando animaciones de tailwind -->
+            <!-- <a v-if="is_request" href="#" onclick="openNav('requests')" class="text-center text-white hover:text-first-500">
+                <svg class="h-6 w-6 fill-current text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path d="M10 20a10 10 0 1 1 0-20 10 10 0 0 1 0 20zm-5.6-4.29a9.95 9.95 0 0 1 11.2 0 8 8 0 1 0-11.2 0zm6.12-7.64l3.02-3.02 1.41 1.41-3.02 3.02a2 2 0 1 1-1.41-1.41z"/>
+                </svg>
+            </a> -->
+            <!-- <div class="dropdown">
                 <div class="dropbtn">
                     <img src="{{ Auth::user()->avatar }}" alt="profile" class="profile w-14 h-14 mx-auto rounded-full">
                     <p>{{ Auth::user()->name }}</p>
@@ -21,6 +26,24 @@
                         @csrf
                         <a href="#" onclick="this.closest('form').submit()">Cerrar Sesion</a>
                     </form>
+                </div>
+            </div> -->
+            <!-- Usar estilos de tailwindcss -->
+            <div class="flex flex-col items-center absolute top-0 right-0 h-16 w-46 overflow-hidden hover:h-fit">
+                <img src="{{ Auth::user()->avatar }}" alt="profile" class="profile w-auto h-16 rounded-full justify-end">
+                <div class="flex flex-col justify-center items-center bg-first-900 border-1 border-first-500 rounded-lg h-full w-full p-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                    <div class="dropbtn">
+                        <p>{{ Auth::user()->name }}</p>
+                    </div>
+                    <div class="dropdown-content">
+                        <form action="/logout" method="POST">
+                            @csrf
+                            <a href="#" class="text-center text-white hover:text-first-500" onclick="this.closest('form').submit()">Cerrar Sesion</a>
+                        </form>
+                    </div>
                 </div>
             </div>
         @endguest

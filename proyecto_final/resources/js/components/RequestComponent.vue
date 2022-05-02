@@ -6,7 +6,7 @@
 </template>
 
 <script>
-    import vueSelect from './VueSelect.vue';
+    import vueSelect from './VueRequest.vue';
     import profiles from './emergents/Profile.vue';
     export default {
         props: {

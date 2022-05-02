@@ -1,28 +1,25 @@
 <template>
-    <div class="grid gap-4 w-1/2 mx-auto">
-        <new-note v-bind:form="windows" ref="notes" v-if="windows['notes'].open" :get="note.content"></new-note>
-        <login v-bind:form="windows" ref="login" v-if="windows['login'].open"></login>
-        <div class="flex flex-row justify-center items-center w-full">
-            <div class="bg-gray-200 rounded-lg shadow-lg flex flex-wrap justify-center items-center">
-                <p class="text-center text-2xl font-bold py-2 px-4">Notas</p>
-                <a href="#" class="bg-blue-500 text-white font-bold py-2 px-4 rounded" @click="openWindow('notes')">Agregar</a>
-            </div>
-        </div>
-
-        <div class="flex flex-col">
-            <div class="bg-gray-200 rounded-lg shadow-lg flex flex-row w-full">
-                <div class="w-full p-3 flex flex-col space-y-4">
-                    <div v-for="note in notes" class="bg-blue-400 text-black font-bold py-2 px-4 rounded ring-1 ring-cyan-400 self-end w-26" :key="note.created_at">
-                        {{note.content.substring(0, 150)}}<span v-if="note.content.length > 30">...</span>
-                        <a href="#" class="bg-blue-500 text-white font-bold py-2 px-4 rounded" @click="openNote(note)">Abrir</a>
-                    </div>
+    <div>
+        <new-note v-bind:form="windows" ref="new_notes" v-if="windows['new_notes'].open" :get="note.content"></new-note>
+        <div class="grid gap-4 w-1/2 mx-auto bg-second-50 rounded-lg shadow-lg">
+            <login v-bind:form="windows" ref="login_message" v-if="windows['login_message'].open"></login>
+            <div class="flex flex-row justify-center items-center w-full">
+                <div class="bg-first-900 rounded-lg shadow-lg flex flex-row flex-wrap justify-between items-center w-full">
+                    <p class="text-center text-white text-2xl font-bold py-2 px-4">Notas</p>
+                    <button type="button" class="bg-first-900 hover:bg-first-500 text-white font-bold w-8 h-8 rounded-full mr-4" @click="openWindow('new_notes')">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                        </svg>
+                    </button>
                 </div>
             </div>
-        </div>
 
-        <div class="bg-gray-200 rounded-lg shadow-lg flex justify-between items-center">
-            <p class="text-center text-2xl font-bold py-2 px-4">Agregar</p>
-            <a href="#" class="bg-blue-500 text-white font-bold py-2 px-4 rounded">Agregar</a>
+            <div class="w-full p-3 flex flex-col space-y-4 max-h-full overflow-y-auto" style="height: calc(100vh - 200px);">
+                <div v-for="note in notes" class="bg-second-900 hover:bg-second-500 text-black font-bold py-2 px-4 rounded-lg self-end w-1/2" :key="note.created_at">
+                    <span>{{note.content.substring(0, 150)}}<span v-if="note.content.length > 150">...</span></span>
+                    <a href="#" class="bg-first-900 hover:bg-first-500 text-white font-bold w-8 h-8 rounded-lg mr-4 p-1" @click="openNote(note)">Abrir</a>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -42,8 +39,8 @@
                 isAuthenticated: false,
                 notes: [],
                 windows: {
-                    notes: {open: false},
-                    login: {open: false}
+                    new_notes: {open: false},
+                    login_message: {open: false}
                 },
                 note: {
                     user_id: '',
@@ -55,8 +52,8 @@
         methods: {
             openWindow(window) {
                 if ((!this.isAuthenticated) && this.notes.length >= 1) {
-                    this.windows.notes.open = false;
-                    this.windows.login.open = true;
+                    this.windows.new_notes.open = false;
+                    this.windows.login_message.open = true;
                 } else {
                     this.windows[window].open = !this.windows[window].open;
                 }
@@ -66,7 +63,7 @@
             },
             openNote(note) {
                 this.note.content = note.content
-                this.openWindow('notes');
+                this.openWindow('new_notes');
             },
             obtenerNotas() {
                 Promise.resolve(queries('GET', '/notes'))
@@ -80,12 +77,17 @@
                 this.isAuthenticated = true;
                 this.note.user_id = this.user.id;
                 this.obtenerNotas();
+                if (localStorage.getItem('notes')) {
+                    localStorage.removeItem('notes');
+                }
             } else {
                 console.log('no user');
                 this.isAuthenticated = false;
                 let notes = JSON.parse(localStorage.getItem('notes'));
                 if (!(!notes || notes.length == 0 || notes == '')) {
                     this.notes = notes;
+                } else {
+                    this.notes = [];
                 }
             }
         },
@@ -96,19 +98,24 @@
         beforeMount() {
             this.$root.$on('note', (value) => {
                 this.note.content = value;
-                this.openWindow('notes');
+                this.openWindow('new_notes');
                 if (this.isAuthenticated) {
                     Promise.resolve(queries('POST', '/notes', this.note))
                     .then(response => {
                         this.obtenerNotas();
                     });
                 } else {
-                    this.notes.push(this.note);
+                    this.notes.push({
+                        user_id: '',
+                        content: this.note.content,
+                        multimedia: '',
+                    });
                     localStorage.setItem('notes', JSON.stringify(this.notes));
                 }
                 this.note.content = '';
             });
             this.$root.$on('close', (value) => {
+                console.log(value);
                 this.windows[value].open = false;
                 this.note.content = '';
             });

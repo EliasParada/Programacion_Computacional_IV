@@ -3,65 +3,49 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>App Emotiva :v</title>
+        <title>{{ config('app.name', 'FeelsGood') }}</title>
         <link rel="stylesheet" href="{{asset('css/app.css')}}">
     </head>
-    <body class="antialiased dark">
-        <div class="bg-cyan-700 dark:bg-blue-600 w-full text-center text-white p-4 flex flex-wrap space-x-4">
-            <h1 class="text-5xl">Password Reset</h1>
-            @include('partials.nav')
+    <body class="antialiased dark bg-third-50">
+        <div id="app">
+            <div class="bg-first-900 dark:bg-first-900 w-full text-center justify-start text-white p-4 mb-4 flex flex-wrap space-x-6">
+                <a href="/" class="text-center text-white hover:text-first-500">
+                    {{ config('app.name', 'Feels Good') }}
+                </a>
+                <a href="/login" class="text-center text-white hover:text-first-500">Ingresar</a>
+                <a href="/register" class="text-center text-white hover:text-first-500">Registrarse</a>
+            </div>
+            <div class="flex flex-wrap justify-center">
+                <form class="w-full max-w-sm bg-second-50 p-4 rounded-lg" method="POST" action="{{ route('password.update') }}">
+                    @csrf
+
+                    <input type="hidden" name="token" value="{{ $token }}">
+
+                    <input id="email" type="email" class="hidden" name="email" value="{{ $email ?? old('email') }}" required autocomplete="email" autofocus>
+                    <p class="text-center text-black text-sm">{{ $email ?? old('email') }}</p>
+
+                    <label for="password" class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Nueva contraseña</label>
+                    <input id="password" type="password" class="appearance-none block w-full bg-gray-200 text-black border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:bg-white focus:border-gray-500" name="password" required autocomplete="new-password">
+                    @error('password')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+
+                    <label for="password-confirm" class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Confirmar contraseña</label>
+                    <input id="password-confirm" type="password" class="appearance-none block w-full bg-gray-200 text-black border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:bg-white focus:border-gray-500" name="password_confirmation" required autocomplete="new-password">
+
+                    <div class="flex flex-wrap -mx-3 mb-2">
+                        <div class="w-full px-3">
+                            <button type="submit" class="bg-first-900 hover:bg-first-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                Guardar contraseña
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
 
-        <div class="flex flex-wrap justify-center">
-            <form class="w-full max-w-sm" method="POST" action="{{ route('password.update') }}">
-                @csrf
-
-                <input type="hidden" name="token" value="{{ $token }}">
-
-                <div class="row mb-3">
-                    <label for="email" class="col-md-4 col-form-label text-md-end">Correo</label>
-
-                    <div class="col-md-6">
-                        <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ $email ?? old('email') }}" required autocomplete="email" autofocus>
-
-                        @error('email')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
-
-                    <div class="col-md-6">
-                        <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-
-                        @error('password')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <label for="password-confirm" class="col-md-4 col-form-label text-md-end">{{ __('Confirm Password') }}</label>
-
-                    <div class="col-md-6">
-                        <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
-                    </div>
-                </div>
-
-                <div class="row mb-0">
-                    <div class="col-md-6 offset-md-4">
-                        <button type="submit" class="btn btn-primary">
-                            {{ __('Reset Password') }}
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
+        <script src="{{asset('js/app.js')}}"></script>
     </body>
 </html>

@@ -1,27 +1,38 @@
 <template>
-    <div class="w-full h-full flex flex-wrap w-1/2 fixed" style="top: 50%; left: 50%; transform: translate(-50%, -50%);">
-        <div class="w-full p-3">
-            <div class="bg-gray-300 rounded-lg shadow-lg flex justify-end">
-                <a href="#" @click="close()" class="bg-red-500 text-white">Cerrar</a>
-                <input type="email" class="w-full p-3 rounded-lg" placeholder="Email" v-model="email">
+    <div class="w-full h-full flex flex-wrap w-1/2 fixed overflow-auto" style="top: 50%; left: 50%; transform: translate(-50%, -50%);">
+        <div class="w-full bg-second-500 absolute rounded-lg">
+            <div class="bg-first-900 rounded-lg shadow-lg flex justify-between p-2">
+                <p class="text-center text-white text-2xl font-bold py-2 px-4">Enseñanos tu cara</p>
+                <button type="button" @click="close()" class="bg-second-900 text-white rounded-full hover:bg-second-500 h-8 w-8">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                <!-- <input type="email" class="w-full p-3 rounded-lg" placeholder="Email" v-model="email"> -->
             </div>
-            <div class="bg-gray-200 rounded-lg shadow-lg p-4">
-                <video id="video" class="w-full rounded-lg shadow-lg" autoplay muted ref="video"></video>
+            <div class="bg-transparent rounded-lg shadow-lg p-4">
+                <video id="video" class="w-full rounded-lg shadow-lg mb-2" autoplay muted ref="video"></video>
+                <div class="bg-transparent flex flex-wrap w-full justify-center items-center">
+                    <button v-if="two" type="button" class="bg-first-900 hover:bg-first-500 text-white font-bold  h-14 w-14 rounded-full" @click="capture">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </button>
+                    <button v-else type="button" class="bg-first-900 hover:bg-first-500 text-white font-bold  h-14 w-14 rounded-full" @click="compare">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </button>
+                </div>
             </div>
-
-            <div class="bg-transparent flex flex-wrap justify-center items-center">
-                <button v-if="two" type="button" class="bg-blue-500 text-white font-bold py-2 px-4 rounded" @click="capture">Capture</button>
-                <button v-else type="button" class="bg-blue-500 text-white font-bold py-2 px-4 rounded" @click="compare">Capture</button>
-            </div>
-
-            <div class="bg-gray-200 rounded-lg shadow-lg flex w-full justify-around">
-                <img class="h-auto rounded-lg w-1/4" src="storage/img/samples/front.jpg" alt="front" ref="front" :class="{'drop-shadow-lg': img === 'front'}">
-                <img v-if="two" class="h-auto rounded-lg w-1/4" src="storage/img/samples/left.jpg" alt="profile" ref="profile" :class="{'drop-shadow-lg': img === 'profile'}">
+            <div class="bg-first-900 rounded-lg shadow-lg flex w-full justify-around">
+                <img class="h-auto rounded-lg w-1/4 border-2 border-black border-solid" src="storage/img/samples/front.jpg" alt="front" ref="front" :class="{'border-dashed border-first-50': img === 'front'}">
+                <img v-if="two" class="h-auto rounded-lg w-1/4 border-2 border-black border-solid" src="storage/img/samples/left.jpg" alt="profile" ref="profile" :class="{'border-dashed border-first-50': img === 'profile'}">
             </div>
         </div>
     </div>
-
-
 </template>
 
 <script>
@@ -146,7 +157,10 @@
                     const img = await faceapi.fetchImage(folder + '/' + label);
                     const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
                     console.log(detections);
-                    descriptions.push(detections.descriptor);
+                    // descriptions.push(detections.descriptor);
+                    if (detections) {
+                        descriptions.push(detections.descriptor);
+                    }
                     console.log(descriptions);
                     return new faceapi.LabeledFaceDescriptors(label, descriptions);
                 }));

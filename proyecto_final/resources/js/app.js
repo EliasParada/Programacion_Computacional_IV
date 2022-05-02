@@ -27,6 +27,7 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 Vue.component('camera-component', require('./components/CameraComponent.vue').default);
 Vue.component('notes-component', require('./components/NotesComponent.vue').default);
 Vue.component('profiles-component', require('./components/UsersComponent.vue').default);
+Vue.component('requests-component', require('./components/RequestComponent.vue').default);
 
 window.queries = async (method = 'POST', url = '', data = null) => {
     const response = await axios({
@@ -54,15 +55,29 @@ const app = new Vue({
     data: {
         dark: false,
         navs: {
-            notes: {open: false},
+            notes: {open: true},
             profiles: {open: false},
             camera: {open: false},
+            requests: {open: false},
         },
         front: '',
         profile: '',
+        is_request: false,
     },
     methods: {
-        
+        getRequest: async (id) => {
+            const response = await queries('GET', '/requests/');
+            console.log(response);
+            // Si hay aunquesea una solicitud
+            if (response.status === 'success') {
+                app.is_request = true;
+            } else {
+                app.is_request = false;
+            }
+        }
+    },
+    mounted() {
+        this.getRequest();
     },
     beforeMount() {
         this.$root.$on('images', (value) => {

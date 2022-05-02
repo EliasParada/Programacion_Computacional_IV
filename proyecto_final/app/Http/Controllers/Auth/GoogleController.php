@@ -18,23 +18,39 @@ class GoogleController extends Controller
     }
     public function handleGoogleCallback()
     {
-        $userLogin = Socialite::driver('google')->user();
+        $userLogin = Socialite::driver('google')->stateless()->user();
         $user = User::where('email', $userLogin->getEmail())->first();
         if ($user) {
             Auth::login($user);
-            return redirect('/dashboard');
+            return redirect('/');
         } else {
             return redirect('/google-register')->with('userLogin', $userLogin);
         }
     }
     public function register(RegisterRequest $request)
     {
+        $request['termsandconditions'] = $request->filled('termsandconditions');
         $credentials = $request->validated();
         $credentials['password'] = bcrypt($credentials['password']);
         $user = User::create($credentials);
         $user->email_verified_at = now();
+        $front = $credentials['front'];
+        $front = explode(',', $front);
+        $frontName = 'front.png';
+        $path = 'storage/images/'.$credentials['email'].'/'.$frontName;
+        if (!file_exists(public_path('storage/images/'.$credentials['email'].'/'.$user->id))) {
+            mkdir(public_path('storage/images/'.$credentials['email'].'/'.$user->id), 0777, true);
+        }
+        file_put_contents($path, base64_decode($front[1]));
+        $user->avatar = $path;
+        $user->save();
+        $profile = $credentials['profile'];
+        $profile = explode(',', $profile);
+        $profileName = 'profile.png';
+        $path = 'storage/images/'.$credentials['email'].'/'.$profileName;
+        file_put_contents($path, base64_decode($profile[1]));
         $user->save();
         Auth::login($user);
-        return redirect('/')->with('<p class="text-green-500">You are logged in!</p>');
+        return redirect('/')->with('success', '¡Bienvenido de nuevo!');
     }
 }

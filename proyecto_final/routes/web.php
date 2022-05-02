@@ -44,7 +44,7 @@ Route::get('/storage', function ($path) {
 Route::get('/', function () {
     if (Auth::check()) {
         if (!Auth::user()->hasVerifiedEmail()) {
-            return redirect('/email/verify');
+            return redirect('/email/verify')->with('resent', true);
         }
     }
     return view('welcome');

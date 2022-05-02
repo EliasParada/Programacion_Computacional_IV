@@ -19,7 +19,7 @@ class LoginController extends Controller
         $remember = $request->filled('remember');
         if (Auth::attempt($request->validated(), $remember)) {
             session()->regenerate();
-            return redirect()->intended('/')->with('success', 'You are logged in!');
+            return redirect()->intended('/')->with('success', '¡Bienvenido de nuevo!');
         }
         throw ValidationException::withMessages([
             'auth' => __('auth.failed'),

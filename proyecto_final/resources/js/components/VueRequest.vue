@@ -1,33 +1,13 @@
 <template>
     <div>
-        <input type="text" v-model="search" class="form-control" placeholder="Buscar..." @keyup="searchResource">
-        <section class="list-group">
-            <div class="list-group-item bg-first-50">
-                <span class="text-muted">Amigos</span>
-            </div>
-            <div v-if="(options.filter(option => option.show == true).length <= 0 && options.filter(option => option.friend == true).length >= 1) || (options.filter(option => option.friend == true).length == 0)" class="list-group-item bg-first-50">
-                <span class="text-muted">No hay amigos</span>
-            </div>
-            <div v-else v-for="option in options" class="list-group-item hover:bg-gray-400 transition-all duration-300" :key="option[llave]" v-show="option.show == true && option.friend == true" @click="selectResource(option)">
-                <span v-for="key in keys" :key="key.value">
-                    <span v-if="key.type == 'txt'">{{option[key.value]}}</span>
-                    <span v-if="key.type == 'img'">
-                        <img :src="option[key.value]" :alt="option[key.value]" class="w-16 h-16 rounded-full mr-2">
-                    </span>
-                    <span v-if="key.type == 'url'">
-                        <a :href="option[key.value]" target="_blank">{{option[key.value]}}</a>
-                    </span>
-                </span>
-            </div>
-        </section>
         <section class="list-group mt-4">
             <div class="list-group-item bg-first-50">
-                <span class="text-muted">Usuarios globales</span>
+                <span class="text-muted">Solicitudes</span>
             </div>
-            <div v-if="(options.filter(option => option.show == true).length <= 0 && options.filter(option => option.friend == false).length >= 1) || (options.filter(option => option.friend == false).length == 0)" class="list-group-item bg-first-50">
-                <span class="text-muted">No hay usuarios</span>
+            <div v-if="(options.filter(option => option.show == true).length <= 0 && options.filter(option => option.request == true).length >= 1) && (options.filter(option => option.me == false).length == 0)" class="list-group-item bg-first-50">
+                <span class="text-muted">No hay solicitudes</span>
             </div>
-            <div v-else v-for="option in options" class="list-group-item hover:bg-gray-400 transition-all delay-500" :key="option[llave]" v-show="option.show == true && option.friend == false" @click="selectResource(option)">
+            <div v-else v-for="option in options" class="list-group-item hover:bg-gray-400 transition-all delay-500" :key="option[llave]" v-show="option.show == true && option.request == true" @click="selectResource(option)">
                 <span v-for="key in keys" :key="key.value">
                     <span v-if="key.type == 'txt'">{{option[key.value]}}</span>
                     <span v-if="key.type == 'img'">

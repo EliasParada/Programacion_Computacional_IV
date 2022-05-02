@@ -16,19 +16,23 @@
                 <a href="/register" class="text-center text-white hover:text-first-500">Registrarse</a>
             </div>
 
-            <div class="flex flex-wrap justify-center pb-4">
+            <div class="flex flex-wrap justify-center py-2">
                 <form method="post" class="w-full max-w-sm bg-second-50 p-4 rounded-lg">
+
                     @csrf
-                        <camera-component v-bind:form="navs" ref="camera" v-if="navs['camera'].open" :two="false"></camera-component>
                     <div class="flex flex-col -mx-3 mb-6">
-                        <label class="block uppercase tracking-wide text-black text-xs font-bold mb-2" for="grid-first-name">Correo</label>
+                        <a href="#" class="bg-first-800 text-third-100 rounded-lg px-4 py-2 flex flex-col items-center justify-center" onclick="openNav('camera')">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="h-6 w-6 fill-third-100">
+                                <path d="M1.5 1a.5.5 0 0 0-.5.5v3a.5.5 0 0 1-1 0v-3A1.5 1.5 0 0 1 1.5 0h3a.5.5 0 0 1 0 1h-3zM11 .5a.5.5 0 0 1 .5-.5h3A1.5 1.5 0 0 1 16 1.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 1-.5-.5zM.5 11a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 1 0 1h-3A1.5 1.5 0 0 1 0 14.5v-3a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v3a1.5 1.5 0 0 1-1.5 1.5h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 1 .5-.5z"/>
+                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                            </svg>
+                            <span class="text-third-100" id="directoryFiles">Tomar una foto</span>
+                            <input type="hidden" name="facial" id="facial" v-model="facial" require value="{{ old('facial') }}">
+                        </a>
+                        <camera-component v-bind:form="navs" ref="camera" v-if="navs['camera'].open" :two="false"></camera-component>
+                        <label class="block uppercase tracking-wide text-black text-xs font-bold mb-2" for="grid-first-name">Email</label>
                         <input class="appearance-none block w-full bg-gray-200 text-black border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:bg-white focus:border-gray-500" id="grid-first-name" autofocus type="email" value="{{ old('email') }}" placeholder="Jane@gmail.com" name="email" required>
                         @error('email')
-                            <p class="text-red-500 text-center">{{$message}}</p>
-                        @enderror
-                        <label class="block uppercase tracking-wide text-black text-xs font-bold mb-2" for="grid-last-name">Contraseña</label>
-                        <input class="appearance-none block w-full bg-gray-200 text-black border border-gray-200 rounded py-3 px-4 leading-tight focus:bg-white focus:border-gray-500" id="grid-last-name" type="password" placeholder="******************" name="password" required>
-                        @error('password')
                             <p class="text-red-500 text-center">{{$message}}</p>
                         @enderror
                         <div class="flex items-center">
@@ -59,7 +63,7 @@
                                     <path d="M1.5 1a.5.5 0 0 0-.5.5v3a.5.5 0 0 1-1 0v-3A1.5 1.5 0 0 1 1.5 0h3a.5.5 0 0 1 0 1h-3zM11 .5a.5.5 0 0 1 .5-.5h3A1.5 1.5 0 0 1 16 1.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 1-.5-.5zM.5 11a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 1 0 1h-3A1.5 1.5 0 0 1 0 14.5v-3a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v3a1.5 1.5 0 0 1-1.5 1.5h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 1 .5-.5z"/>
                                     <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
                                 </svg>
-                                Inicio facial
+                                Inicio tradicional
                             </a>
                         </p>
                         <p class="text-center text-blue-500 text-xs">
