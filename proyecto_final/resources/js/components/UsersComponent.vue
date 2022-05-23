@@ -1,6 +1,6 @@
 <template>
     <div class="container mx-auto bg-second-50 p-2 rounded-lg">
-        <vue-select :options="users" :llave="'id'" :label="'img:avatar,name'" :value="'x'" :by="'name'"></vue-select>
+        <vue-select :options="users" :llave="'id'" :label="'img:avatar,name,email'" :value="'x'" :by="'name,email'"></vue-select>
         <profiles :user_by="user" :user_to="user_target" v-if="show_profiles"></profiles>
     </div>
 </template>
@@ -31,6 +31,7 @@
                     const friends = Promise.resolve(queries('GET', '/friends'));
                     friends.then(response => {
                         this.users = this.users.map(user => {
+                            user.friend = false;
                             user.friend = response.find(friend => friend.user_id == user.id || friend.friend_id == user.id) ? true : false;
                             return user;
                         });
@@ -38,21 +39,14 @@
                     const requests = Promise.resolve(queries('GET', '/requests'));
                     requests.then(response => {
                         this.users = this.users.map(user => {
+                            user.request = false;
+                            user.me = false;
                             user.request = response.find(request => request.user_id == user.id || request.friend_id == user.id) ? true : false;
                             user.me = response.find(request => request.user_id == this.user.id) ? true : false;
                             return user;
                         });
                     });
                 });
-            },
-            sendRequest(id) {
-                // const request = Promise.resolve(queries('POST', '/requests', {
-                //     user_id: id,
-                //     user_requested_id: this.user.id
-                // }));
-                // request.then(response => {
-                //     console.log(response);
-                // });
             },
         },
         components: {
@@ -73,7 +67,7 @@
                 this.user_target = value;
                 this.show_profiles = true;
             });
-            this.$root.$on('close', () => {
+            this.$root.$on('close_profile', () => {
                 this.show_profiles = false;
             });
             this.$root.$on('close_action', (values) => {

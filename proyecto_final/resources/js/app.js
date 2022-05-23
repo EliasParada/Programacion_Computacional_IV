@@ -66,14 +66,19 @@ const app = new Vue({
     },
     methods: {
         getRequest: async (id) => {
-            const response = await queries('GET', '/requests/');
-            console.log(response);
-            // Si hay aunquesea una solicitud
-            if (response.status === 'success') {
-                app.is_request = true;
-            } else {
+            const response = await queries('GET', '/requests/')
+            .then(response => {
+                console.log(response);
+                if (response.status === 'success') {
+                    app.is_request = true;
+                } else {
+                    app.is_request = false;
+                }
+            })
+            .catch(error => {
+                console.log(error);
                 app.is_request = false;
-            }
+            });
         }
     },
     mounted() {

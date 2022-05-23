@@ -6028,7 +6028,7 @@ __webpack_require__.r(__webpack_exports__);
 
       _this2.note.content = '';
     });
-    this.$root.$on('close', function (value) {
+    this.$root.$on('close_note', function (value) {
       console.log(value);
       _this2.windows[value].open = false;
       _this2.note.content = '';
@@ -6087,6 +6087,7 @@ __webpack_require__.r(__webpack_exports__);
         var friends = Promise.resolve(queries('GET', '/friends'));
         friends.then(function (response) {
           _this.users = _this.users.map(function (user) {
+            user.friend = false;
             user.friend = response.find(function (friend) {
               return friend.user_id == user.id || friend.friend_id == user.id;
             }) ? true : false;
@@ -6096,6 +6097,8 @@ __webpack_require__.r(__webpack_exports__);
         var requests = Promise.resolve(queries('GET', '/requests'));
         requests.then(function (response) {
           _this.users = _this.users.map(function (user) {
+            user.request = false;
+            user.me = false;
             user.request = response.find(function (request) {
               return request.user_id == user.id || request.friend_id == user.id;
             }) ? true : false;
@@ -6106,14 +6109,7 @@ __webpack_require__.r(__webpack_exports__);
           });
         });
       });
-    },
-    sendRequest: function sendRequest(id) {// const request = Promise.resolve(queries('POST', '/requests', {
-      //     user_id: id,
-      //     user_requested_id: this.user.id
-      // }));
-      // request.then(response => {
-      //     console.log(response);
-      // });
+      console.log(this.users);
     }
   },
   components: {
@@ -6136,7 +6132,7 @@ __webpack_require__.r(__webpack_exports__);
       _this2.user_target = value;
       _this2.show_profiles = true;
     });
-    this.$root.$on('close', function () {
+    this.$root.$on('close_profile', function () {
       _this2.show_profiles = false;
     });
     this.$root.$on('close_action', function (values) {
@@ -6226,6 +6222,7 @@ __webpack_require__.r(__webpack_exports__);
         var friends = Promise.resolve(queries('GET', '/friends'));
         friends.then(function (response) {
           _this.users = _this.users.map(function (user) {
+            user.friend = false;
             user.friend = response.find(function (friend) {
               return friend.user_id == user.id || friend.friend_id == user.id;
             }) ? true : false;
@@ -6235,6 +6232,8 @@ __webpack_require__.r(__webpack_exports__);
         var requests = Promise.resolve(queries('GET', '/requests'));
         requests.then(function (response) {
           _this.users = _this.users.map(function (user) {
+            user.request = false;
+            user.me = false;
             user.request = response.find(function (request) {
               return request.user_id == user.id || request.friend_id == user.id;
             }) ? true : false;
@@ -6245,14 +6244,6 @@ __webpack_require__.r(__webpack_exports__);
           });
         });
       });
-    },
-    sendRequest: function sendRequest(id) {// const request = Promise.resolve(queries('POST', '/requests', {
-      //     user_id: id,
-      //     user_requested_id: this.user.id
-      // }));
-      // request.then(response => {
-      //     console.log(response);
-      // });
     }
   },
   components: {
@@ -6275,7 +6266,7 @@ __webpack_require__.r(__webpack_exports__);
       _this2.user_target = value;
       _this2.show_profiles = true;
     });
-    this.$root.$on('close', function () {
+    this.$root.$on('close_profile', function () {
       _this2.show_profiles = false;
     });
     this.$root.$on('close_action', function (values) {
@@ -6768,7 +6759,7 @@ __webpack_require__.r(__webpack_exports__);
       this.note = '';
     },
     cancelNote: function cancelNote() {
-      this.$root.$emit('close', 'new_notes');
+      this.$root.$emit('close_note', 'new_notes');
       this.note = '';
     }
   },
@@ -6843,7 +6834,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     exit: function exit() {
-      this.$root.$emit('close', 'profile');
+      this.$root.$emit('close_profile', 'profile');
       this.note = '';
     },
     addFriend: function addFriend() {
@@ -6862,11 +6853,23 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     delFriend: function delFriend() {
-      //
+      var _this2 = this;
+
+      Promise.resolve(queries('post', '/friends/delete', {
+        user_id: this.user_by.id,
+        friend_id: this.user_to.id
+      })).then(function (res) {
+        console.log('Amigo eliminado');
+
+        _this2.$root.$emit('close_action', {
+          action: 'del_friend',
+          user_id: _this2.user_to.id
+        });
+      });
       console.log('delFriend');
     },
     acceptFriend: function acceptFriend() {
-      var _this2 = this;
+      var _this3 = this;
 
       Promise.resolve(queries('POST', '/friends', {
         user_id: this.user_by.id,
@@ -6874,35 +6877,35 @@ __webpack_require__.r(__webpack_exports__);
       })).then(function (res) {
         console.log('Solicitud aceptada');
 
-        _this2.$root.$emit('close_action', {
+        _this3.$root.$emit('close_action', {
           action: 'accept_friend',
-          user_id: _this2.user_to.id
+          user_id: _this3.user_to.id
         });
       });
     },
     rejectFriend: function rejectFriend() {
-      var _this3 = this;
+      var _this4 = this;
 
       this.user_to["for"] = 'friend';
       Promise.resolve(queries('DELETE', '/requests/reject/', this.user_to)).then(function (res) {
         console.log('Solicitud rechazada');
 
-        _this3.$root.$emit('close_action', {
+        _this4.$root.$emit('close_action', {
           action: 'reject_friend',
-          user_id: _this3.user_to.id
+          user_id: _this4.user_to.id
         });
       });
     },
     cancelFriend: function cancelFriend() {
-      var _this4 = this;
+      var _this5 = this;
 
       this.user_to["for"] = 'sent';
       Promise.resolve(queries('DELETE', '/requests/cancel/', this.user_to)).then(function (res) {
         console.log('Solicitud cancelada');
 
-        _this4.$root.$emit('close_action', {
+        _this5.$root.$emit('close_action', {
           action: 'cancel_friend',
-          user_id: _this4.user_to.id
+          user_id: _this5.user_to.id
         });
       });
     },
@@ -7039,19 +7042,23 @@ var app = new Vue({
             switch (_context2.prev = _context2.next) {
               case 0:
                 _context2.next = 2;
-                return queries('GET', '/requests/');
+                return queries('GET', '/requests/').then(function (response) {
+                  console.log(response);
+
+                  if (response.status === 'success') {
+                    app.is_request = true;
+                  } else {
+                    app.is_request = false;
+                  }
+                })["catch"](function (error) {
+                  console.log(error);
+                  app.is_request = false;
+                });
 
               case 2:
                 response = _context2.sent;
-                console.log(response); // Si hay aunquesea una solicitud
 
-                if (response.status === 'success') {
-                  app.is_request = true;
-                } else {
-                  app.is_request = false;
-                }
-
-              case 5:
+              case 3:
               case "end":
                 return _context2.stop();
             }
@@ -44270,9 +44277,9 @@ var render = function () {
         attrs: {
           options: _vm.users,
           llave: "id",
-          label: "img:avatar,name",
+          label: "img:avatar,name,email",
           value: "x",
-          by: "name",
+          by: "name,email",
         },
       }),
       _vm._v(" "),
@@ -44316,9 +44323,9 @@ var render = function () {
         attrs: {
           options: _vm.users,
           llave: "id",
-          label: "img:avatar,name",
+          label: "img:avatar,name,email",
           value: "x",
-          by: "name",
+          by: "name,email",
         },
       }),
       _vm._v(" "),

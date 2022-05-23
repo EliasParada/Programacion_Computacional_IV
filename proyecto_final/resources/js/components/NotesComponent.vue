@@ -114,7 +114,7 @@
                 }
                 this.note.content = '';
             });
-            this.$root.$on('close', (value) => {
+            this.$root.$on('close_note', (value) => {
                 console.log(value);
                 this.windows[value].open = false;
                 this.note.content = '';

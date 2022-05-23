@@ -87,10 +87,14 @@ class FriendsController extends Controller
      * @param  \App\Models\Friends  $friendships
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Friends $friendships)
+    public function destroy(Request $request)
     {
+        // return $request->all();
         $friendship = Friends::where('user_id', auth()->id())
-            ->where('friend_id', $friendships->friend_id)
+            ->where('friend_id', $request->friend_id)
+            ->orWhere('user_id', $request->friend_id)
+            ->where('friend_id', auth()->id())
             ->delete();
+        return response()->json(['success' => $friendship]);
     }
 }

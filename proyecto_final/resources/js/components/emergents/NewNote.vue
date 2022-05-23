@@ -37,7 +37,7 @@
                 this.note = '';
             },
             cancelNote() {
-                this.$root.$emit('close', 'new_notes');
+                this.$root.$emit('close_note', 'new_notes');
                 this.note = '';
             }
         },

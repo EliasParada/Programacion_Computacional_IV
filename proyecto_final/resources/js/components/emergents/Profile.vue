@@ -47,7 +47,7 @@
         },
         methods: {
             exit() {
-                this.$root.$emit('close', 'profile');
+                this.$root.$emit('close_profile', 'profile');
                 this.note = '';
             },
             addFriend() {
@@ -63,7 +63,16 @@
                 });
             },
             delFriend() {
-                //
+                Promise.resolve(queries('post', '/friends/delete', {
+                    user_id: this.user_by.id,
+                    friend_id: this.user_to.id
+                })).then(res => {
+                    console.log('Amigo eliminado');
+                    this.$root.$emit('close_action', {
+                        action: 'del_friend',
+                        user_id: this.user_to.id
+                    });
+                });
                 console.log('delFriend');
             },
             acceptFriend() {

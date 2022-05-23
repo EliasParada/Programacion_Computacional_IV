@@ -31,12 +31,15 @@
             <!-- Usar estilos de tailwindcss -->
             <div class="flex flex-col items-center absolute top-0 right-0 h-16 w-46 overflow-hidden hover:h-fit">
                 <img src="{{ Auth::user()->avatar }}" alt="profile" class="profile w-auto h-16 rounded-full justify-end">
-                <div class="flex flex-col justify-center items-center bg-first-900 border-1 border-first-500 rounded-lg h-full w-full p-2">
+                <div class="flex flex-col justify-center items-center bg-first-900 border-1 border-first-500 rounded-lg h-full w-full p-2 z-10">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                     </svg>
                     <div class="dropbtn">
                         <p>{{ Auth::user()->name }}</p>
+                    </div>
+                    <div class="dropbtn">
+                        <a href="#" onclick="openNav('')" class="text-center text-white hover:text-first-500">Aplicar a Experto</a>
                     </div>
                     <div class="dropdown-content">
                         <form action="/logout" method="POST">

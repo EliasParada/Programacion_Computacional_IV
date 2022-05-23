@@ -5,6 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{{ config('app.name', 'FeelsGood') }}</title>
         <link rel="stylesheet" href="{{asset('css/app.css')}}">
+
+        <script src="storage/vendors/ckeditor/ckeditor.js"></script>
     </head>
     <body class="antialiased bg-third-50">
         @include('partials.nav')
@@ -18,6 +20,12 @@
             @endif
         </div>
 
+        <!-- <textarea name="editor1" id="editor1" class="ckeditor" cols="30" rows="10"></textarea> -->
+
         <script src="{{asset('js/app.js')}}"></script>
+
+        <!-- <script>
+            CKEDITOR.replace( 'editor1' );
+        </script> -->
     </body>
 </html>

@@ -17,6 +17,7 @@ use App\Http\Requests\RegisterRequest;
 use app\Models\User;
 
 Route::view('/', 'welcome');
+Route::view('/a', 'test');
 Route::view('login', 'login')->name('login')->middleware('guest');
 Route::view('dashboard', 'dashboard')->middleware(['auth', 'verified']);
 Route::view('registrar', 'register')->middleware('guest');
@@ -79,3 +80,4 @@ Route::resource('/friends', FriendsController::class)->middleware(['auth', 'veri
 Route::delete('/friends/{id}', [FriendsController::class, 'destroy'])->middleware(['auth', 'verified']);
 Route::delete('/requests/cancel/', [FriendRequestsController::class, 'destroy'])->middleware(['auth', 'verified']);
 Route::delete('/requests/reject/', [FriendRequestsController::class, 'test'])->middleware(['auth', 'verified']);
+Route::post('friends/delete', [FriendsController::class, 'destroy'])->middleware(['auth', 'verified']);
