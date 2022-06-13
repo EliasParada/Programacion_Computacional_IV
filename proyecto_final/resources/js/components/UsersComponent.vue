@@ -46,6 +46,16 @@
                             return user;
                         });
                     });
+                    const blocks = Promise.resolve(queries('GET', '/blocks'));
+                    blocks.then(response => {
+                        this.users = this.users.map(user => {
+                            user.block_me = false;
+                            user.block_for = false;
+                            user.block_me = response.find(block => block.user_id == this.user.id) ? true : false;
+                            user.block_for = response.find(block => block.user_id == user.id) ? true : false;
+                            return user;
+                        });
+                    });
                 });
             },
         },
@@ -58,7 +68,6 @@
         },
         watch: {
             user_target(newValue) {
-                // this.$emit('input', newValue);
                 console.log(newValue);
             }
         },
@@ -83,6 +92,13 @@
                         break;
                     case 'cancel_request':
                         this.users.find(user => user.id == this.user_target.user_id).me = false;
+                        break;
+                    case 'block_user':
+                        this.users.find(user => user.id == this.user_target.user_id).block_me = true;
+                        break;
+                    case 'unblock_user':
+                        this.users.find(user => user.id == this.user_target.user_id).block_me = false;
+                        break;
                     default:
                         break;
                 }

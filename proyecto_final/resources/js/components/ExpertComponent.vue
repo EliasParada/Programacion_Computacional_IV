@@ -1,64 +1,80 @@
 <template>
-    <!-- A form for aplication to add a new expert, it needs the next data:
-        - natioality: string
-        - dni: string
-        - university: string
-        - title: string -->
-    <!-- Use tailwindcss to style the form -->
-    <div class="grid gap-4 w-1/2 mx-auto bg-second-50 rounded-lg shadow-lg">
-        <div class="flex flex-wrap justify-center pb-4">
-                <form method="post" class="w-full max-w-sm bg-second-50 p-4 rounded-lg">
-                    <!-- <label class="block uppercase tracking-wide text-black text-xs font-bold mb-2" for="grid-first-name">Correo</label>
-                    <input class="appearance-none block w-full bg-gray-200 text-black border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:bg-white focus:border-gray-500" id="grid-first-name" autofocus type="email" value="{{ old('email') }}" placeholder="Jane@gmail.com" name="email" required>
-                    @error('email')
-                        <p class="text-red-500 text-center">{{$message}}</p>
-                    @enderror -->
-                    <label class="block uppercase tracking-wide text-black text-xs font-bold mb-2" for="grid-first-name">Nacionalidad</label>
-                    <!-- Un select para las nacionalidades -->
-                    <select class="appearance-none block w-full bg-gray-200 text-black border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:bg-white focus:border-gray-500" id="grid-first-name" v-model="expert.nationality" required>
-                        <option value="">Seleccione una nacionalidad</option>
-                        <option v-for="country in countries" :key="country" value="country">country</option>
-                    </select>
-                    <span class="text-red-500 text-center" v-if="errors.nationality">
-                        {{ error.nationality }}
-                    </span>
-                    <label class="block uppercase tracking-wide text-black text-xs font-bold mb-2" for="grid-first-name">Número de Identificación</label>
-                    <!-- Use a patter from dnis[nat] to validate the dni -->
-                    <input type="text" class="appearance-none block w-full bg-gray-200 text-black border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:bg-white focus:border-gray-500" id="grid-first-name" v-model="expert.dni" placeholder="12345678" required pattern="dnis[expert.nationality]">
-                    
-    </div>
+    <div>
+        <div class="grid gap-4 w-2/3 mx-auto bg-second-50 rounded-lg shadow-lg">
+            <div class="flex flex-row justify-center items-center w-full">
+                <div class="bg-first-900 rounded-lg shadow-lg flex flex-row flex-wrap justify-between items-center w-full">
+                    <p class="text-center text-white text-2xl font-bold py-2 px-4">¿Qué es un Experto Altruista?</p>
+                    <!-- button type="button" class="bg-first-900 hover:bg-first-500 text-white font-bold w-8 h-8 rounded-full mr-4" @click="openWindow('new_news')" v-if="user && user.permissions == 2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                        </svg>
+                    </button -->
+                </div>
+            </div>
 
+            <div class="w-full p-3 flex flex-col space-y-4 max-h-full overflow-y-auto" style="height: calc(100vh - 200px);">
+                <!-- Una sección con un boton para aplicar -->
+                <div class="mb-2 flex flex-col justify-left items-left w-full">
+                    <button type="button" class="bg-first-900 hover:bg-first-500 text-white font-bold rounded-full mr-4 p-2" @click="expert" v-if="user && user.permissions !== 2">
+                        Convertirse en Experto Altruista
+                    </button>
+                    <p v-else class="text-center text-black text-2xl font-bold py-2 px-4">
+                        Ya eres un experto altruista
+                    </p>
+                </div>
+                <h1 class="text-black text-2xl font-bold py-2 px-4">¿Qué es un Experto Altruista?</h1>
+                <p class="text-black text-xs">
+                    Un experto altruista es una persona que tiene una visión y una filosofía de la vida que le permite aportar a la sociedad.
+                    Un experto altruista es una persona que tiene una visión y una filosofía de la vida que le permite aportar a la sociedad.
+                    Un experto altruista es una persona que tiene una visión y una filosofía de la vida que le permite aportar a la sociedad.
+                    Un experto altruista es una persona que tiene una visión y una filosofía de la vida que le permite aportar a la sociedad.
+                    Un experto altruista es una persona que tiene una visión y una filosofía de la vida que le permite aportar a la sociedad.
+                    Un experto altruista es una persona que tiene una visión y una filosofía de la vida que le permite aportar a la sociedad.
+                    Un experto altruista es una persona que tiene una visión y una filosofía de la vida que le permite aportar a la sociedad.
+                    Un experto altruista es una persona que tiene una visión y una filosofía de la vida que le permite aportar a la sociedad.
+                    Un experto altruista es una persona que tiene una visión y una filosofía de la vida que le permite aportar a la sociedad.
+                    Un experto altruista es una persona que tiene una visión y una filosofía de la vida que le permite aportar a la sociedad.
+                    Un experto altruista es una persona que tiene una visión y una filosofía de la vida que le permite aportar a la sociedad.
+                    Un experto altruista es una persona que tiene una visión y una filosofía de la vida que le permite aportar a la sociedad.
+                    Un experto altruista es una persona que tiene una visión y una filosofía de la vida que le permite aportar a la sociedad.
+                    Un experto altruista es una persona que tiene una visión y una filosofía de la vida que le permite aportar a la sociedad.
+                    Un experto altruista es una persona que tiene una visión y una filosofía de la vida que le permite aportar a la sociedad.
+                    Un experto altruista es una persona que tiene una visión y una filosofía de la vida que le permite aportar a la sociedad.
+                    Un experto altruista es una persona que tiene una visión y una filosofía de la vida que le permite aportar a la sociedad.
+                    Un experto altruista es una persona que tiene una visión y una filosofía de la vida que le permite aportar a la sociedad.
+                    Un experto altruista es una persona que tiene una visión y una filosofía de la vida que le permite aportar a la sociedad.
+                    Un experto altruista es una persona que tiene una visión y una filosofía de la vida que le permite aportar a la sociedad.
+                    Un experto altruista es una persona que tiene una visión y una filosofía de la vida que le permite aportar a la sociedad.
+                    Un experto altruista es una persona que tiene una visión y una filosofía de la vida que le permite aportar a la sociedad.
+                </p>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
-export default defineComponent({
-    data() {
-        return {
-            countries: [
-                'Canada',
-                'El Salvador',
-                'Mexico',
-                'United States',
-            ],
-            dnis: {
-                'Canada': [
-                    '\d{2}\.\d{3}\.\d{3}'
-                ],
-                'El Salvador': [
-                    '^\d{8}-\d{1}$'
-                ],
-                'Mexico': [
-                    '[AZ] {6} [0-9] {8} [AZ] {1} [0-9] {3}'
-                ],
-                'United States': [
-                    '^ \ d {3} \ - \ d {2} - \ d {4} $'
-                ],
-            },
-            },
-            expert: {
-                nationality: '',
+    export default {
+        props: {
+            user: {
+                type: Object,
+                required: false
             }
-        }
+        },
+        data() {
+            return { }
+        },
+        methods: {
+            expert() {
+                queries('POST', '/expert', {}).then(response => {
+                    console.log(response);
+                    window.location.reload();
+                });
+            }
+        },
+        mounted() {
+        },
+        beforeMount() {
+            
+        },
     }
-})
 </script>

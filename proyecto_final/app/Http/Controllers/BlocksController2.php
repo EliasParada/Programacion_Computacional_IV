@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\News;
+use App\Models\Blocks;
 use Illuminate\Http\Request;
 
-class NewsController extends Controller
+class BlocksController2 extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +14,7 @@ class NewsController extends Controller
      */
     public function index()
     {
-        return News::all();
+        return Blocks::where('user_id', auth()->id())->orWhere('block_id', auth()->id())->get();
     }
 
     /**
@@ -35,21 +35,19 @@ class NewsController extends Controller
      */
     public function store(Request $request)
     {
-        $new = new News();
-        $new->title = $request->title;
-        $new->description = $request->description;
-        $new->user_id = auth()->user()->id;
-        $new->save();
-        return $new;
+        Blocks::create([
+            'user_id' => auth()->id(),
+            'block_id' => $request->block_id,
+        ]);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\News  $news
+     * @param  \App\Models\Blocks  $blocs
      * @return \Illuminate\Http\Response
      */
-    public function show(News $news)
+    public function show(Blocks $blocs)
     {
         //
     }
@@ -57,10 +55,10 @@ class NewsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\News  $news
+     * @param  \App\Models\Blocks  $blocs
      * @return \Illuminate\Http\Response
      */
-    public function edit(News $news)
+    public function edit(Blocks $blocs)
     {
         //
     }
@@ -69,10 +67,10 @@ class NewsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\News  $news
+     * @param  \App\Models\Blocks  $blocs
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, News $news)
+    public function update(Request $request, Blocks $blocs)
     {
         //
     }
@@ -80,11 +78,13 @@ class NewsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\News  $news
+     * @param  \App\Models\Blocks  $blocs
      * @return \Illuminate\Http\Response
      */
-    public function destroy(News $news)
+    public function destroy(Request $request)
     {
-        //
+        Blocks::where('user_id', auth()->id())
+            ->where('block_id', $request->block_id)
+            ->delete();
     }
 }

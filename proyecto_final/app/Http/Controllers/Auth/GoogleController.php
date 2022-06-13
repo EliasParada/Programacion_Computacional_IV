@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
+use App\Models\Permissions;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\RegisterRequest;
 
@@ -32,6 +33,21 @@ class GoogleController extends Controller
         $request['termsandconditions'] = $request->filled('termsandconditions');
         $credentials = $request->validated();
         $credentials['password'] = bcrypt($credentials['password']);
+
+        $permissions = Permissions::get();
+        if ($permissions->count() == 0) { 
+            $permissions = Permissions::create([
+                'id' => 1,
+                'name' => 'user',
+                'description' => 'User',
+            ]);
+            $permissions = Permissions::create([
+                'id' => 2,
+                'name' => 'admin',
+                'description' => 'Administrator',
+            ]);
+        }
+
         $user = User::create($credentials);
         $user->email_verified_at = now();
         $front = $credentials['front'];

@@ -12,6 +12,9 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\FriendRequestsController;
 use App\Http\Controllers\FriendsController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\ExpertsController;
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\BlocksController;
 
 use App\Http\Requests\RegisterRequest;
 use app\Models\User;
@@ -75,9 +78,15 @@ Route::get('/login/google', [GoogleController::class, 'redirectToGoogle'])->name
 Route::get('/login/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('login.google.callback');
 Route::resource('/notes', NotesController::class)->middleware(['auth', 'verified']);
 Route::resource('/users', UsersController::class)->middleware(['auth', 'verified']);
+Route::post('/expert', [UsersController::class, 'expert'])->middleware(['auth', 'verified']);
+Route::resource('/blocks', BlocksController::class)->middleware(['auth', 'verified']);
+Route::delete('/blocks/cancel', [BlocksController::class, 'destroy'])->middleware(['auth', 'verified']);
 Route::resource('/requests', FriendRequestsController::class)->middleware(['auth', 'verified']);
 Route::resource('/friends', FriendsController::class)->middleware(['auth', 'verified']);
 Route::delete('/friends/{id}', [FriendsController::class, 'destroy'])->middleware(['auth', 'verified']);
 Route::delete('/requests/cancel/', [FriendRequestsController::class, 'destroy'])->middleware(['auth', 'verified']);
 Route::delete('/requests/reject/', [FriendRequestsController::class, 'test'])->middleware(['auth', 'verified']);
 Route::post('friends/delete', [FriendsController::class, 'destroy'])->middleware(['auth', 'verified']);
+Route::post('/expert/new', [ExpertsController::class, 'store'])->middleware(['auth', 'verified']);
+Route::get('/news', [NewsController::class, 'index'])->middleware(['auth', 'verified']);
+Route::post('/news/new', [NewsController::class, 'store'])->middleware(['auth', 'verified']);

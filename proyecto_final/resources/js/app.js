@@ -12,6 +12,23 @@ window.openNav = (nav) => {
         app.navs[key].open = key === nav;
     }
 }
+window.socketio = io('http://localhost:3000');
+socketio.on('connect', function(e){
+    console.log('Connected to server');
+});
+if (!Notification) {
+    console.log('Notifications are not supported');
+}
+window.norificable = 'default';
+if (Notification.permission !== "denied") {
+    Notification.requestPermission(function (status) {
+        console.log('Notification permission status:', status);
+        norificable = status;
+    });
+} else {
+    console.log('Notification permission is denied');
+    norificable = 'denied';
+}
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -22,12 +39,16 @@ window.openNav = (nav) => {
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-Vue.component('camera-component', require('./components/CameraComponent.vue').default);
-Vue.component('notes-component', require('./components/NotesComponent.vue').default);
-Vue.component('profiles-component', require('./components/UsersComponent.vue').default);
-Vue.component('requests-component', require('./components/RequestComponent.vue').default);
+import example from './components/ExampleComponent.vue';
+import camera from './components/CameraComponent.vue';
+import notes from './components/NotesComponent.vue';
+import profiles from './components/UsersComponent.vue';
+import requests from './components/RequestComponent.vue';
+import news from './components/NewsComponent.vue';
+import setting from './components/SettingsComponent.vue';
+import toast from './components/vToast.vue';
+import expert from './components/ExpertComponent.vue';
+import chat from './components/ChatComponent.vue';
 
 window.queries = async (method = 'POST', url = '', data = null) => {
     const response = await axios({
@@ -59,10 +80,28 @@ const app = new Vue({
             profiles: {open: false},
             camera: {open: false},
             requests: {open: false},
+            news: {open: false},
+            settings: {open: false},
+            expert: {open: false},
+            chat: {open: false},
         },
         front: '',
         profile: '',
         is_request: false,
+        user: null,
+        friend: null,
+    },
+    components: {
+        'example-component': example,
+        'camera-component': camera,
+        'notes-component': notes,
+        'profiles-component': profiles,
+        'requests-component': requests,
+        'news-component': news,
+        'setting-component': setting,
+        'tast': toast,
+        'expert-component': expert,
+        'chat-component': chat,
     },
     methods: {
         getRequest: async (id) => {
@@ -79,10 +118,33 @@ const app = new Vue({
                 console.log(error);
                 app.is_request = false;
             });
-        }
+        },
+        getUser() {
+            let userDiv = document.getElementById('user');
+            let id = userDiv.getElementsByTagName('ul')[0].getElementsByTagName('li')[0].innerHTML;
+            let name = userDiv.getElementsByTagName('ul')[0].getElementsByTagName('li')[1].innerHTML;
+            let email = userDiv.getElementsByTagName('ul')[0].getElementsByTagName('li')[2].innerHTML;
+            this.user = {id, name, email};
+            console.log(this.user);
+        },
     },
     mounted() {
-        this.getRequest();
+        Promise.all([
+            this.getRequest(),
+            this.getUser()]);
+        console.log(`Personal chanel: ${this.user.id}Chan`)
+        socketio.on(`${this.user.id}Chan`, function(data){
+            if (norificable === 'granted') {
+                var notification = new Notification(data.title, {
+                    body: data.body,
+                    icon: data.icon,
+                });
+
+                notification.onclick = function () {
+                    window.open(data.url);
+                }
+            }
+        });
     },
     beforeMount() {
         this.$root.$on('images', (value) => {
@@ -93,9 +155,9 @@ const app = new Vue({
         this.$root.$on('close', (value) => {
             this.navs[value].open = false;
         });
+        this.$root.$on('go_chat', (value) => {
+            this.friend = value;
+            openNav('chat');
+        });
     }
-    // watch: {
-    //     dark: (val) => {
-    //     }
-    // }
 });

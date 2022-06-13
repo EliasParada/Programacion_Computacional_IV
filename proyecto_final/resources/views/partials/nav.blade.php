@@ -8,6 +8,7 @@
             <a href="/login" class="text-center text-white hover:text-first-500">Ingresar</a>
             <a href="/register" class="text-center text-white hover:text-first-500">Registrarse</a>
         @else
+            <a href="#" onclick="openNav('news')" class="text-center text-white hover:text-first-500">Noticias</a>
             <a href="#" onclick="openNav('profiles')" class="text-center text-white hover:text-first-500">Buscar</a>
             <a href="#" onclick="openNav('requests')" class="text-center text-white hover:text-first-500">Solicitudes</a>
             <!-- Si is_request mostrar un circulo usando animaciones de tailwind -->
@@ -39,7 +40,7 @@
                         <p>{{ Auth::user()->name }}</p>
                     </div>
                     <div class="dropbtn">
-                        <a href="#" onclick="openNav('')" class="text-center text-white hover:text-first-500">Aplicar a Experto</a>
+                        <a href="#" onclick="openNav('settings')" class="text-center text-white hover:text-first-500">Ajustes</a>
                     </div>
                     <div class="dropdown-content">
                         <form action="/logout" method="POST">

@@ -26,6 +26,10 @@
         "vue-template-compiler": "^2.6.12"
     },
     "dependencies": {
-        "face-api.js": "^0.22.2"
+        "express": "^4.18.1",
+        "face-api.js": "^0.22.2",
+        "mongodb": "^4.6.0",
+        "socket.io": "^4.5.1",
+        "v-toaster": "^1.0.3"
     }
 }

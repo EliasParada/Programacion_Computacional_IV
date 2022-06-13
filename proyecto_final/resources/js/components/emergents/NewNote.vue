@@ -1,6 +1,6 @@
 <template>
     <div class="w-full h-full flex justify-center items-center fixed" style="top: 50%; left: 50%; transform: translate(-50%, -50%);">
-        <div class="w-1/2 absolute flex flex-col justify-center items-center rounded-lg shadow-lg">
+        <div class="w-2/3 absolute flex flex-col justify-center items-center rounded-lg shadow-lg">
             <form class="bg-second-50 rounded-lg shadow-lg flex flex-col w-full" @submit.prevent="addNote">
                 <div class="bg-first-900 text-white font-bold py-2 px-4 rounded self-end w-full">
                     <p class="text-center text-2xl font-bold py-2 px-4">{{ title }}</p>

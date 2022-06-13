@@ -92,6 +92,7 @@
             </div>
         </div>
         
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.1/socket.io.min.js"></script>
         <script src="{{asset('js/app.js')}}"></script>
     </body>
 </html>

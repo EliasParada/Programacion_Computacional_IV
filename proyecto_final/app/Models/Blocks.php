@@ -5,14 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Experts extends Model
+class Blocks extends Model
 {
     use HasFactory;
 
-    protected $table = 'experts';
-
     protected $fillable = [
-        'user_id', 'nationality', 'dni', 'university', 'title'
+        'user_id',
+        'block_id',
     ];
 
     public $incrementing = false;

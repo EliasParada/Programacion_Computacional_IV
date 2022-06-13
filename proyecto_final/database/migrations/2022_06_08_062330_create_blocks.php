@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateNotes extends Migration
+class CreateBlocks extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateNotes extends Migration
      */
     public function up()
     {
-        Schema::create('notes', function (Blueprint $table) {
+        Schema::create('blocks', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id');
-            $table->text('content');
-            $table->text('multimedia')->nullable();
+            $table->unsignedBigInteger('block_id');
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('block_id')->references('id')->on('users');
         });
     }
 
@@ -29,6 +29,6 @@ class CreateNotes extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('notes');
+        Schema::dropIfExists('blocks');
     }
 }
