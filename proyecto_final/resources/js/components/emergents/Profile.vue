@@ -11,20 +11,22 @@
                 <div v-if="!user_to.block_me && !user_to.block_for">
                     <div v-if="user_to.friend == false && user_to.request == false" class="bg-second-50 rounded-lg shadow-lg flex justify-between items-center w-full space-x-4">
                         <button class="bg-first-900 hocer:bg-first-500 text-white font-bold py-2 px-4 rounded" @click="addFriend">Enviar Solicitud</button>
+                        <button class="bg-warning-900 hocer:bg-warning-500 text-white font-bold py-2 px-4 rounded" @click="blockUser">Bloquear</button>
                         <button class="bg-first-900 hocer:bg-first-500 text-white font-bold py-2 px-4 rounded" @click="exit">Salir</button>
                     </div>
                     <div v-else-if="user_to.friend == true" class="bg-second-50 rounded-lg shadow-lg flex justify-between items-center w-full">
                         <button class="bg-first-900 hocer:bg-first-500 text-white font-bold py-2 px-4 rounded" @click="goChat">Ir al chat</button>
                         <button class="bg-warning-900 hocer:bg-warning-500 text-white font-bold py-2 px-4 rounded" @click="delFriend">Eliminar Amigo</button>
+                        <button class="bg-warning-900 hocer:bg-warning-500 text-white font-bold py-2 px-4 rounded" @click="blockUser">Bloquear</button>
                         <button class="bg-first-900 hocer:bg-first-500 text-white font-bold py-2 px-4 rounded" @click="exit">Salir</button>
                     </div>
                     <div v-else-if="user_to.request == true" class="bg-second-50 rounded-lg shadow-lg flex justify-between items-center w-full">
                         <button v-if="user_to.me == true" class="bg-warning-900 hocer:bg-warning-500 text-white font-bold py-2 px-4 rounded" @click="cancelFriend">Cancelar Solicitud</button>
                         <button v-if="user_to.me == false" class="bg-first-900 hocer:bg-first-500 text-white font-bold py-2 px-4 rounded" @click="acceptFriend">Aceptar Solicitud</button>
                         <button v-if="user_to.me == false" class="bg-warning-900 hocer:bg-warning-500 text-white font-bold py-2 px-4 rounded" @click="rejectFriend">Rechazar Solicitud</button>
+                        <button class="bg-warning-900 hocer:bg-warning-500 text-white font-bold py-2 px-4 rounded" @click="blockUser">Bloquear</button>
                         <button class="bg-first-900 hocer:bg-first-500 text-white font-bold py-2 px-4 rounded" @click="exit">Salir</button>
                     </div>
-                    <button class="bg-warning-900 hocer:bg-warning-500 text-white font-bold py-2 px-4 rounded" @click="blockUser">Bloquear</button>
                 </div>
                 <div v-else>
                     <div v-if="user_to.block_me" class="bg-second-50 rounded-lg shadow-lg flex justify-between items-center w-full">
@@ -32,7 +34,7 @@
                         <button class="bg-first-900 hocer:bg-first-500 text-white font-bold py-2 px-4 rounded" @click="exit">Salir</button>
                     </div>
                     <div v-else-if="user_to.block_for" class="bg-second-50 rounded-lg shadow-lg flex justify-between items-center w-full">
-                        <p class="text-center text-2xl font-bold py-2 px-4">{{ user_to.name }} te ha bloqueado</p>
+                        <p class="text-center text-2xl font-bold py-2 px-4">No tienes acciones permitidas</p>
                         <button class="bg-first-900 hocer:bg-first-500 text-white font-bold py-2 px-4 rounded" @click="exit">Salir</button>
                     </div>
                 </div>

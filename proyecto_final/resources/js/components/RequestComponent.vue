@@ -1,6 +1,6 @@
 <template>
     <div class="container mx-auto bg-second-50 p-2 rounded-lg">
-        <vue-select :options="users" :llave="'id'" :label="'img:avatar,name,email'" :value="'x'" :by="'name,email'"></vue-select>
+        <vue-select :options="users" :llave="'id'" :label="'img:avatar,name'" :value="'x'" :by="'name'" :userby="user"></vue-select>
         <profiles :user_by="user" :user_to="user_target" v-if="show_profiles"></profiles>
     </div>
 </template>
@@ -45,6 +45,9 @@
                             user.me = response.find(request => request.user_id == this.user.id) ? true : false;
                             return user;
                         });
+                    });
+                    socketio.emit('get_last_messages', {
+                        user_id: this.user.id
                     });
                 });
                 console.log(this.users);

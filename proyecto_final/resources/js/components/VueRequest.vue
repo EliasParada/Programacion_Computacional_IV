@@ -7,16 +7,30 @@
             <div v-if="(options.filter(option => option.show == true).length <= 0 && options.filter(option => option.request == true).length >= 1) && (options.filter(option => option.me == false).length == 0)" class="list-group-item bg-first-50">
                 <span class="text-muted">No hay solicitudes</span>
             </div>
-            <div v-else v-for="option in options" class="list-group-item hover:bg-gray-400 transition-all delay-500" :key="option[llave]" v-show="option.show == true && option.request == true" @click="selectResource(option)">
-                <span v-for="key in keys" :key="key.value">
-                    <span v-if="key.type == 'txt'">{{option[key.value]}}</span>
-                    <span v-if="key.type == 'img'">
-                        <img :src="option[key.value]" :alt="option[key.value]" class="w-16 h-16 rounded-full mr-2">
+            <div v-else v-for="option in options" class="list-group-item flex items-center justify-between" :key="option[llave]" v-show="option.show == true && option.request == true">
+                <div class="flex items-center justify-start w-full transition-all duration-300">
+                    <span v-for="key in keys" :key="key.value">
+                        <span v-if="key.type == 'txt'">{{option[key.value]}}</span>
+                        <span v-if="key.type == 'img'">
+                            <img :src="option[key.value]" :alt="option[key.value]" class="w-16 h-16 rounded-full mr-2">
+                        </span>
+                        <span v-if="key.type == 'url'">
+                            <a :href="option[key.value]" target="_blank">{{option[key.value]}}</a>
+                        </span>
                     </span>
-                    <span v-if="key.type == 'url'">
-                        <a :href="option[key.value]" target="_blank">{{option[key.value]}}</a>
-                    </span>
-                </span>
+                </div>
+                <div class="flex items-center justify-end">
+                    <button type="button" class="py-4 px-6 bg-first-900 hover:bg-first-500 font-bold h-auto w-fit rounded-lg mr-4 text-white" @click="acceptFriend(option)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
+                        </svg>
+                    </button>
+                    <button type="button" class="py-4 px-6 bg-gray-50 border-1 border-gray-400 hover:bg-gray-400 font-bold h-auto w-fit rounded-lg mr-4 text-black" @click="rejectFriend(option)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M22 10.5h-6m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
+                        </svg>
+                    </button>
+                </div>
             </div>
         </section>
     </div>
@@ -43,6 +57,10 @@ export default {
         },
         by: {
             type: String,
+            required: true
+        },
+        userby: {
+            type: Object,
             required: true
         },
     },
@@ -123,6 +141,36 @@ export default {
                 });
             }
             this.$forceUpdate();
+        },
+        acceptFriend(to) {
+            Promise.resolve(queries('POST', '/friends', {
+                user_id: this.userby.id,
+                friend_id: to.id
+            })).then(res => {
+                console.log('Solicitud aceptada');
+                changeRequest(-1);
+                socketio.emit('accept', {
+                    by: this.userby,
+                    to: to,
+                });
+                this.options.forEach((item, key) => {
+                    if (item.id == to.id) {
+                        this.options.splice(key, 1);
+                    }
+                });
+            });
+        },
+        rejectFriend(to) {
+            to.for = 'friend';
+            Promise.resolve(queries('DELETE', '/requests/reject/', to))
+            .then(res => {
+                changeRequest(-1);
+                this.options.forEach((item, key) => {
+                    if (item.id == to.id) {
+                        this.options.splice(key, 1);
+                    }
+                });
+            });
         },
         selectResource(item) {
             this.$root.$emit('goProfile', item);

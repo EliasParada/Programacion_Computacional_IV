@@ -1,6 +1,6 @@
 <template>
     <div class="container mx-auto bg-second-50 p-2 rounded-lg">
-        <vue-select :options="users" :llave="'id'" :label="'img:avatar,name,email'" :value="'x'" :by="'name,email'"></vue-select>
+        <vue-select :options="users" :llave="'id'" :label="'img:avatar,name'" :value="'x'" :by="'name'" :userby="user"></vue-select>
         <profiles :user_by="user" :user_to="user_target" v-if="show_profiles"></profiles>
     </div>
 </template>
@@ -19,7 +19,8 @@
             return {
                 users: [],
                 user_target: {},
-                show_profiles: false
+                show_profiles: false,
+                friends: [],
             }
         },
         methods: {
@@ -35,6 +36,19 @@
                             user.friend = response.find(friend => friend.user_id == user.id || friend.friend_id == user.id) ? true : false;
                             return user;
                         });
+                        this.friends = response.map(friend => friend.user_id == this.user.id ? friend.friend_id : friend.user_id);
+                        socketio.emit('getFriendsMsg', {
+                            friends: this.friends,
+                            user: this.user.id
+                        });
+                        socketio.on('setFriendsMsg', data => {
+                            console.log(data, data[0]);
+                            this.users.map(user => {
+                                if (data[0].to == user.id || data[0].by == user.id) {
+                                    user.msg = data[0].msg;
+                                }
+                            });
+                        });
                     });
                     const requests = Promise.resolve(queries('GET', '/requests'));
                     requests.then(response => {
@@ -48,11 +62,12 @@
                     });
                     const blocks = Promise.resolve(queries('GET', '/blocks'));
                     blocks.then(response => {
+                        console.log('bloqueados',response);
                         this.users = this.users.map(user => {
                             user.block_me = false;
                             user.block_for = false;
-                            user.block_me = response.find(block => block.user_id == this.user.id) ? true : false;
-                            user.block_for = response.find(block => block.user_id == user.id) ? true : false;
+                            user.block_me = response.find(block => block.user_id == this.user.id && block.block_id == user.id) ? true : false;
+                            user.block_for = response.find(block => block.user_id == user.id && block.block_id == this.user.id) ? true : false;
                             return user;
                         });
                     });

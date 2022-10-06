@@ -86,7 +86,7 @@ class FriendRequestsController extends Controller
     public function destroy(Request $Request)
     {
         if ($Request->for == 'friend') {
-            FriendRequests::where('user_id', $Request->id)
+            $a = FriendRequests::where('user_id', $Request->id)
                 ->where('friend_id', auth()->id())
                 ->delete();
             return 'friend request rejected';

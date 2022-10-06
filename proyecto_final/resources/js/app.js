@@ -65,6 +65,12 @@ window.queries = async (method = 'POST', url = '', data = null) => {
     });
     return response;
 };
+window.changeRequest = (num) => {
+    app.numRequest += num;
+    if (app.numRequest < 0) {
+        app.numRequest = 0;
+    }
+}
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -90,6 +96,7 @@ const app = new Vue({
         is_request: false,
         user: null,
         friend: null,
+        numRequest: 0,
     },
     components: {
         'example-component': example,
@@ -107,12 +114,12 @@ const app = new Vue({
         getRequest: async (id) => {
             const response = await queries('GET', '/requests/')
             .then(response => {
-                console.log(response);
-                if (response.status === 'success') {
-                    app.is_request = true;
-                } else {
+                console.log(response, response.length);
+                if (response.length == 0) {
                     app.is_request = false;
                 }
+                app.numRequest = response.length;
+                app.is_request = true;
             })
             .catch(error => {
                 console.log(error);

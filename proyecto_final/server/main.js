@@ -31,11 +31,21 @@ function emit(user, msg = '') {
 socketio.on('connection', socket => {
     console.log('Client connected from ' + socket.handshake.address);
     socket.on('request', data => {
-        emit(data, `${data.name} te ha enviado una solicitud`);
+        let datasend = {
+            id: data.to.id,
+            name: data.by.name,
+            avatar: data.by.avatar
+        }
+        emit(datasend, `${data.by.name} te ha enviado una solicitud`);
         
     });
     socket.on('accept', data => {
-        emit(data, `${data.name} ha aceptado tu solicitud`);
+        let datasend = {
+            id: data.by.id,
+            name: data.to.name,
+            avatar: data.to.avatar
+        }
+        emit(datasend, `${data.to.name} ha aceptado tu solicitud`);
     });
     socket.on('sendMsg', data => {
         mongodb.connect(url, (err, client) => {
@@ -70,6 +80,25 @@ socketio.on('connection', socket => {
                 if (err) console.log(err);
                 console.log(`${data.ids.join('_')}Chat`);
                 socket.emit(`${data.ids.join('_')}Chat`, chat);
+            });
+        });
+    });
+    socket.on('getFriendsMsg', data => {
+        mongodb.connect(url, (err, client) => {
+            if (err) console.log(err);
+            const db = client.db(dbName);
+            data.friends.forEach(friend => {
+                console.log(friend);
+                db.collection('chats').find({
+                    $or: [
+                        {by: data.user, to: friend},
+                        {by: friend, to: data.user}
+                    ]
+                }).sort({date: -1}).limit(1).toArray((err, chat) => {
+                    if (err) console.log(err);
+                    console.log(chat);
+                    socket.emit('setFriendsMsg', chat);
+                });
             });
         });
     });

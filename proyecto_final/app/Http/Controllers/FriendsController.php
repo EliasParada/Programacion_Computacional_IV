@@ -36,14 +36,12 @@ class FriendsController extends Controller
      */
     public function store(Request $request)
     {
-        FriendRequests::where('user_id', $request->friend_id)
-            ->where('friend_id', auth()->id())
-            ->delete();
+        $friendshipRequest = FriendRequests::where('user_id', $request->friend_id)->where('friend_id', auth()->id())->delete();
         $friendship = Friends::create([
             'user_id' => auth()->id(),
             'friend_id' => $request->friend_id,
         ]);
-
+        
         return $friendship;
     }
 

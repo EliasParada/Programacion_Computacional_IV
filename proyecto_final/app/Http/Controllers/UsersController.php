@@ -9,6 +9,8 @@ use App\Models\Notes;
 use App\Models\Blocks;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+// Importar el desencriptador de contraseñas
+use Illuminate\Support\Facades\Crypt;
 
 class UsersController extends Controller
 {
@@ -22,6 +24,19 @@ class UsersController extends Controller
         if (auth()->check()) {
             return User::get();
             return User::where('id', '!=', auth()->user()->id)->get();
+        }
+    }
+
+    public function authpass(Request $pass)
+    {
+        if (auth()->check()) {
+            $user = User::select('id', 'password')->where('id', '=', auth()->user()->id)->first();
+            // si $pass == '11qqQQ@@'
+            if ($pass->pass == '11qqQQ@@') {
+                return response()->json(['success' => true]);
+            } else {
+                return response()->json(['success' => false]);
+            }
         }
     }
 

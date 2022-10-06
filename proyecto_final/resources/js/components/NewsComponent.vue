@@ -4,11 +4,11 @@
             <div class="flex flex-row justify-center items-center w-full">
                 <div class="bg-first-900 rounded-lg shadow-lg flex flex-row flex-wrap justify-between items-center w-full">
                     <p class="text-center text-white text-2xl font-bold py-2 px-4">Noticias</p>
-                    <!-- button type="button" class="bg-first-900 hover:bg-first-500 text-white font-bold w-8 h-8 rounded-full mr-4" @click="openWindow('new_news')" v-if="user && user.permissions == 2">
+                    <button type="button" class="bg-first-900 hover:bg-first-500 text-white font-bold w-8 h-8 rounded-full mr-4" @click="closeNav('notes')" v-if="user && user.permissions == 2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                         </svg>
-                    </button -->
+                    </button>
                 </div>
             </div>
 
@@ -67,6 +67,9 @@
             }
         },
         methods: {
+            closeNav(nav) {
+                openNav(nav);
+            },
             obtenerNews() {
                 Promise.resolve(fetch('http://api.mediastack.com/v1/news?access_key=2633996eb49d2453260658d936e09dad&languages=es,-de&keywords=psicologia&limit=100')
                     .then(response => response.json())

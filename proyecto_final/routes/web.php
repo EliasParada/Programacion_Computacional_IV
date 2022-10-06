@@ -78,6 +78,7 @@ Route::get('/login/google', [GoogleController::class, 'redirectToGoogle'])->name
 Route::get('/login/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('login.google.callback');
 Route::resource('/notes', NotesController::class)->middleware(['auth', 'verified']);
 Route::resource('/users', UsersController::class)->middleware(['auth', 'verified']);
+Route::post('/authpass', [UsersController::class, 'authpass']);	
 Route::post('/expert', [UsersController::class, 'expert'])->middleware(['auth', 'verified']);
 Route::resource('/blocks', BlocksController::class)->middleware(['auth', 'verified']);
 Route::delete('/blocks/cancel', [BlocksController::class, 'destroy'])->middleware(['auth', 'verified']);

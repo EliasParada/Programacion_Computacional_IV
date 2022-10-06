@@ -1,9 +1,17 @@
 <template>
     <div>
+        <notify v-if="open" :mensaje="mensaje" :emmiter="'del_account'"></notify>
+        <passcomp v-if="openpass" :mensaje="'Ingresa tu contraseña'" :emmiter="'del_account'"></passcomp>
         <div class="grid w-2/3 mx-auto bg-second-50 rounded-lg shadow-lg">
             <div class="flex flex-row justify-center items-center w-full">
                 <div class="bg-first-900 rounded-lg shadow-lg flex flex-row flex-wrap justify-between items-center w-full">
                     <p class="text-center text-white text-2xl font-bold py-2 px-4">Ajustes</p>
+                    
+                <button type="button" class="bg-first-900 hover:bg-first-500 text-white font-bold w-full h-auto rounded-full mr-4 col-start-5" @click="sendMsg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                    </svg>
+                </button>
                 </div>
             </div>
 
@@ -30,7 +38,7 @@
                             <span class="w-full flex flex-row justify-center items-center">
                                 <input type="text" class="bg-transparent border-none text-black text-2xl font-bold py-2 px-4" v-model="user.name" placeholder="Nombre" :disabled="!edit">
                                 <button class="bg-transparent border-none text-black text-2xl font-bold" @click="editName">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-auto w-3/5 fill-transparent stroke-black" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 fill-transparent stroke-black" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                     </svg>
                                 </button>
@@ -90,6 +98,8 @@
 </template>
 
 <script>
+    import notify from './emergents/Accept.vue';
+    import passcomp from './emergents/PassComp.vue';
     export default {
         props: {
             user: {
@@ -97,13 +107,20 @@
                 required: false
             }
         },
+        components: {
+            notify,
+            passcomp
+        },
         data() {
             return {
                 changes: {
                     name: '',
                     password: ''
                 },
-                edit: false
+                edit: false,
+                open: false,
+                openpass: false,
+                mensaje: '',
             }
         },
         methods: {
@@ -114,12 +131,22 @@
                 });
             },
             deleteAccount() {
-                if (confirm('¿Estás seguro de que quieres eliminar tu cuenta?')) {
-                    queries('DELETE', '/users/' + this.user.id, this.changes).then(response => {
-                        console.log(response);
-                        window.location.reload();
-                    });
-                }
+                this.mensaje = '¿Estás seguro de que quieres eliminar tu cuenta?';
+                this.openpass = true;
+
+                this.$root.$on('del_account', (res) => {
+                    if (res) {
+                        queries('DELETE', '/users/' + this.user.id, {}).then(response => {
+                            console.log(response);
+                            window.location.reload();
+                        });
+                    } else {
+                        this.openpass = false;
+                    }
+                });
+            },
+            closeNav() {
+                openNav();
             },
             editName() {
                 this.edit = !this.edit;
