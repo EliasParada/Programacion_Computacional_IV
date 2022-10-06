@@ -32,7 +32,5 @@
                 this.$root.$emit('close', 'login_message')
             }
         },
-        mounted() {
-        },
     }
 </script>

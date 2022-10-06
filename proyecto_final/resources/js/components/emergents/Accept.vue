@@ -55,7 +55,5 @@
                 this.$root.$emit(this.emmiter, [true]);
             }
         },
-        mounted() {
-        },
     }
 </script>

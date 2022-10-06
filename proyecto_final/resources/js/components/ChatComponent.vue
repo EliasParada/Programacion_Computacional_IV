@@ -127,14 +127,14 @@
                             Promise.resolve(queries('post', '/friends/delete', {
                                 user_id: this.user.id,
                                 friend_id: this.friend.id
-                            })).then(data => {
+                            })).then(response => {
                                 this.openNotify = false;
                                 this.emiter = 'confirm';
                                 this.mensaje = `¡${this.friend.name} y tu ya no son amigos`;
                                 this.openConfirm = true;
 
-                                this.$root.$on('confirm', (data) => {
-                                    if (data) {
+                                this.$root.$on('confirm', (res) => {
+                                    if (res) {
                                         this.closeNav('profiles');
                                     }
                                 });

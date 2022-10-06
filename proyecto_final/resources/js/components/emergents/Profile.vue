@@ -6,7 +6,7 @@
                     <p class="text-center text-2xl font-bold py-2 px-4">¿Conoces a {{ user_to.name }}?</p>
                 </span>
                 <div class="bg-second-50 rounded-lg shadow-lg flex flex-col w-full pb-2">
-                    <img :src="user_to.avatar" class="w-64 h-64 p-3 mx-auto">
+                    <img :src="user_to.avatar" class="w-64 h-64 p-3 mx-auto" alt="Profile">
                 </div>
                 <div v-if="!user_to.block_me && !user_to.block_for">
                     <div v-if="user_to.friend == false && user_to.request == false" class="bg-second-50 rounded-lg shadow-lg flex justify-between items-center w-full space-x-4">
@@ -153,9 +153,6 @@
             goChat() {
                 this.$root.$emit('go_chat', this.user_to);
             }
-        },
-        mounted() {
-            // this.note = JSON.parse(JSON.stringify(this.get));
         },
     }
 </script>

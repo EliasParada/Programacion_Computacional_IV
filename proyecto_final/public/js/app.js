@@ -21896,7 +21896,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
-//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: {
@@ -22049,9 +22048,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   drawBox.draw(canvas);
                 });
                 img.src = canvas.toDataURL();
-                console.log(results); // if (results.filter(r => r.label == 'unknown').length == 0 && results.filter(r => r.label == 'unknown').length == 0) {
-                //     this.$root.$emit('images', true);
-                // }
+                console.log(results);
 
               case 19:
               case "end":
@@ -22082,7 +22079,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 case 6:
                   detections = _context3.sent;
-                  console.log(detections); // descriptions.push(detections.descriptor);
+                  console.log(detections);
 
                   if (detections) {
                     descriptions.push(detections.descriptor);
@@ -22257,14 +22254,14 @@ __webpack_require__.r(__webpack_exports__);
             Promise.resolve(queries('post', '/friends/delete', {
               user_id: _this2.user.id,
               friend_id: _this2.friend.id
-            })).then(function (data) {
+            })).then(function (response) {
               _this2.openNotify = false;
               _this2.emiter = 'confirm';
               _this2.mensaje = "\xA1".concat(_this2.friend.name, " y tu ya no son amigos");
               _this2.openConfirm = true;
 
-              _this2.$root.$on('confirm', function (data) {
-                if (data) {
+              _this2.$root.$on('confirm', function (res) {
+                if (res) {
                   _this2.closeNav('profiles');
                 }
               });
@@ -22463,9 +22460,7 @@ __webpack_require__.r(__webpack_exports__);
     closeNav: function closeNav(id) {
       openNav(id);
     }
-  },
-  mounted: function mounted() {},
-  beforeMount: function beforeMount() {}
+  }
 });
 
 /***/ }),
@@ -22481,8 +22476,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 //
 //
 //
@@ -22537,7 +22530,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   },
   data: function data() {
-    return _defineProperty({
+    return {
       isAuthenticated: false,
       news: [],
       windows: {
@@ -22545,11 +22538,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           open: false
         }
       }
-    }, "news", {
-      user_id: '',
-      content: '',
-      multimedia: null
-    });
+    };
   },
   methods: {
     closeNav: function closeNav(nav) {
@@ -22568,27 +22557,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   },
   mounted: function mounted() {
-    if (this.user) {
-      this.isAuthenticated = true;
-      this.news.user_id = this.user.id;
-      this.obtenerNews();
-
-      if (localStorage.getItem('news')) {
-        localStorage.removeItem('news');
-      }
-    } else {
-      console.log('no user');
-      this.isAuthenticated = false;
-      var news = JSON.parse(localStorage.getItem('news'));
-
-      if (!(!news || news.length == 0 || news == '')) {
-        this.news = news;
-      } else {
-        this.news = [];
-      }
-    }
-  },
-  beforeMount: function beforeMount() {}
+    this.obtenerNews();
+  }
 });
 
 /***/ }),
@@ -22790,24 +22760,24 @@ __webpack_require__.r(__webpack_exports__);
           return user.id != _this.user.id;
         });
         var friends = Promise.resolve(queries('GET', '/friends'));
-        friends.then(function (response) {
+        friends.then(function (resfriends) {
           _this.users = _this.users.map(function (user) {
             user.friend = false;
-            user.friend = response.find(function (friend) {
+            user.friend = resfriends.find(function (friend) {
               return friend.user_id == user.id || friend.friend_id == user.id;
             }) ? true : false;
             return user;
           });
         });
         var requests = Promise.resolve(queries('GET', '/requests'));
-        requests.then(function (response) {
+        requests.then(function (resrequests) {
           _this.users = _this.users.map(function (user) {
             user.request = false;
             user.me = false;
-            user.request = response.find(function (request) {
+            user.request = resrequests.find(function (request) {
               return request.user_id == user.id || request.friend_id == user.id;
             }) ? true : false;
-            user.me = response.find(function (request) {
+            user.me = resrequests.find(function (request) {
               return request.user_id == _this.user.id;
             }) ? true : false;
             return user;
@@ -22829,7 +22799,6 @@ __webpack_require__.r(__webpack_exports__);
   },
   watch: {
     user_target: function user_target(newValue) {
-      // this.$emit('input', newValue);
       console.log(newValue);
     }
   },
@@ -22867,6 +22836,7 @@ __webpack_require__.r(__webpack_exports__);
           _this2.users.find(function (user) {
             return user.id == _this2.user_target.user_id;
           }).me = false;
+          break;
 
         default:
           break;
@@ -22894,8 +22864,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _emergents_Accept_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./emergents/Accept.vue */ "./resources/js/components/emergents/Accept.vue");
 /* harmony import */ var _emergents_PassComp_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./emergents/PassComp.vue */ "./resources/js/components/emergents/PassComp.vue");
-//
-//
 //
 //
 //
@@ -23099,6 +23067,26 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    filterFind: function filterFind(objres, obj) {
+      var key = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'friend_id';
+      var one = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+      if (objres) if (!one) {
+        if (key == 'friend_id') {
+          if (objres.find(function (objfind) {
+            return objfind.user_id == obj.id || objfind[key] == obj.id;
+          })) return true;
+        } else {
+          if (objres.find(function (objfind) {
+            return objfind.user_id == obj[0].id && objfind[key] == obj[1].id;
+          })) return true;
+        }
+      } else {
+        if (objres.find(function (objfind) {
+          return objfind.user_id == obj.id;
+        })) return true;
+      }
+      return false;
+    },
     getUsers: function getUsers() {
       var _this = this;
 
@@ -23109,16 +23097,17 @@ __webpack_require__.r(__webpack_exports__);
           return user.id != _this.user.id;
         });
         var friends = Promise.resolve(queries('GET', '/friends'));
-        friends.then(function (response) {
+        friends.then(function (resfriends) {
           _this.users = _this.users.map(function (user) {
-            user.friend = false;
-            user.friend = response.find(function (friend) {
-              return friend.user_id == user.id || friend.friend_id == user.id;
-            }) ? true : false;
+            user.friend = _this.filterFind(resfriends, user);
             return user;
           });
-          _this.friends = response.map(function (friend) {
-            return friend.user_id == _this.user.id ? friend.friend_id : friend.user_id;
+          _this.friends = resfriends.map(function (friend) {
+            if (friend.user_id == _this.user.id) {
+              return friend.friend_id;
+            } else {
+              return friend.user_id;
+            }
           });
           socketio.emit('getFriendsMsg', {
             friends: _this.friends,
@@ -23128,38 +23117,28 @@ __webpack_require__.r(__webpack_exports__);
             console.log(data, data[0]);
 
             _this.users.map(function (user) {
-              if (data[0].to == user.id || data[0].by == user.id) {
-                user.msg = data[0].msg;
+              var datatemp = data[0];
+
+              if (datatemp.to == user.id || datatemp.by == user.id) {
+                user.msg = datatemp.msg;
               }
             });
           });
         });
         var requests = Promise.resolve(queries('GET', '/requests'));
-        requests.then(function (response) {
+        requests.then(function (resrrequests) {
           _this.users = _this.users.map(function (user) {
-            user.request = false;
-            user.me = false;
-            user.request = response.find(function (request) {
-              return request.user_id == user.id || request.friend_id == user.id;
-            }) ? true : false;
-            user.me = response.find(function (request) {
-              return request.user_id == _this.user.id;
-            }) ? true : false;
+            user.request = _this.filterFind(resrrequests, user, 'friend_id');
+            user.me = _this.filterFind(resrrequests, _this.user, '', true);
             return user;
           });
         });
         var blocks = Promise.resolve(queries('GET', '/blocks'));
-        blocks.then(function (response) {
-          console.log('bloqueados', response);
+        blocks.then(function (resrblocks) {
+          console.log('bloqueados', resrblocks);
           _this.users = _this.users.map(function (user) {
-            user.block_me = false;
-            user.block_for = false;
-            user.block_me = response.find(function (block) {
-              return block.user_id == _this.user.id && block.block_id == user.id;
-            }) ? true : false;
-            user.block_for = response.find(function (block) {
-              return block.user_id == user.id && block.block_id == _this.user.id;
-            }) ? true : false;
+            user.block_me = _this.filterFind(resrblocks, [_this.user, user], 'block_id');
+            user.block_for = _this.filterFind(resrblocks, [user, _this.user], 'block_id');
             return user;
           });
         });
@@ -23331,15 +23310,16 @@ __webpack_require__.r(__webpack_exports__);
       if (label.includes(',')) {
         newLabel = label.split(',');
         newLabel = newLabel.map(function (item) {
-          return item = _this.setResourse(item);
+          return _this.setResourse(item);
         });
         return newLabel;
       } else if (label.includes('*')) {
         newLabel = this.options.map(item, function (key) {
-          return item = {
+          var label = {
             type: 'txt',
             value: item[Object.keys(item)[key]]
           };
+          return label;
         });
         return newLabel;
       } else {
@@ -23620,13 +23600,13 @@ __webpack_require__.r(__webpack_exports__);
               Promise.resolve(queries('post', '/friends/delete', {
                 user_id: _this2.userby.id,
                 friend_id: to.id
-              })).then(function (res) {
+              })).then(function (response) {
                 console.log('Amigo eliminado');
               });
             }
 
-            _this2.$root.$on('confirm', function (data) {
-              if (data) {
+            _this2.$root.$on('confirm', function (res) {
+              if (res) {
                 _this2.openConfirm = false;
               }
             });
@@ -23656,7 +23636,7 @@ __webpack_require__.r(__webpack_exports__);
             Promise.resolve(queries('POST', '/blocks', {
               user_id: _this3.userby.id,
               blocked_id: to.id
-            })).then(function (res) {
+            })).then(function (response) {
               Promise.resolve(queries('post', '/friends/delete', {
                 user_id: _this3.userby.id,
                 friend_id: to.id
@@ -23667,8 +23647,8 @@ __webpack_require__.r(__webpack_exports__);
                 _this3.mensaje = "".concat(to.name, " ha sido bloqueado");
                 _this3.openConfirm = true;
 
-                _this3.$root.$on('confirm', function (data) {
-                  if (data) {
+                _this3.$root.$on('confirm', function (res2) {
+                  if (res2) {
                     _this3.openConfirm = false;
                   }
                 });
@@ -23729,15 +23709,16 @@ __webpack_require__.r(__webpack_exports__);
       if (label.includes(',')) {
         newLabel = label.split(',');
         newLabel = newLabel.map(function (item) {
-          return item = _this5.setResourse(item);
+          return _this5.setResourse(item);
         });
         return newLabel;
       } else if (label.includes('*')) {
         newLabel = this.options.map(item, function (key) {
-          return item = {
+          var label = {
             type: 'txt',
             value: item[Object.keys(item)[key]]
           };
+          return label;
         });
         return newLabel;
       } else {
@@ -23887,8 +23868,7 @@ __webpack_require__.r(__webpack_exports__);
     accept: function accept() {
       this.$root.$emit(this.emmiter, [true]);
     }
-  },
-  mounted: function mounted() {}
+  }
 });
 
 /***/ }),
@@ -23948,8 +23928,7 @@ __webpack_require__.r(__webpack_exports__);
     close: function close() {
       this.$root.$emit(this.emmiter, [false]);
     }
-  },
-  mounted: function mounted() {}
+  }
 });
 
 /***/ }),
@@ -23997,8 +23976,7 @@ __webpack_require__.r(__webpack_exports__);
     close: function close() {
       this.$root.$emit('close', 'login_message');
     }
-  },
-  mounted: function mounted() {}
+  }
 });
 
 /***/ }),
@@ -24014,8 +23992,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-//
-//
 //
 //
 //
@@ -24145,8 +24121,7 @@ __webpack_require__.r(__webpack_exports__);
         _this.$root.$emit(_this.emmiter, false);
       });
     }
-  },
-  mounted: function mounted() {}
+  }
 });
 
 /***/ }),
@@ -24333,8 +24308,6 @@ __webpack_require__.r(__webpack_exports__);
     goChat: function goChat() {
       this.$root.$emit('go_chat', this.user_to);
     }
-  },
-  mounted: function mounted() {// this.note = JSON.parse(JSON.stringify(this.get));
   }
 });
 
@@ -24423,16 +24396,16 @@ if (!Notification) {
   console.log('Notifications are not supported');
 }
 
-window.norificable = 'default';
+window.notificable = 'default';
 
 if (Notification.permission !== "denied") {
   Notification.requestPermission(function (status) {
     console.log('Notification permission status:', status);
-    norificable = status;
+    notificable = status;
   });
 } else {
   console.log('Notification permission is denied');
-  norificable = 'denied';
+  notificable = 'denied';
 }
 /**
  * The following block of code may be used to automatically register your
@@ -24441,8 +24414,6 @@ if (Notification.permission !== "denied") {
  *
  * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
  */
-// const files = require.context('./', true, /\.vue$/i)
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 
 
@@ -24473,8 +24444,8 @@ window.queries = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_babel_runtime_reg
             method: method,
             url: url,
             data: data
-          }).then(function (response) {
-            return response.data;
+          }).then(function (res) {
+            return res.data;
           })["catch"](function (error) {
             console.log(error);
             return {
@@ -24567,14 +24538,14 @@ var app = new Vue({
             switch (_context2.prev = _context2.next) {
               case 0:
                 _context2.next = 2;
-                return queries('GET', '/requests/').then(function (response) {
-                  console.log(response, response.length);
+                return queries('GET', '/requests/').then(function (res) {
+                  console.log(res, res.length);
 
-                  if (response.length == 0) {
+                  if (res.length == 0) {
                     app.is_request = false;
                   }
 
-                  app.numRequest = response.length;
+                  app.numRequest = res.length;
                   app.is_request = true;
                 })["catch"](function (error) {
                   console.log(error);
@@ -24615,7 +24586,7 @@ var app = new Vue({
     Promise.all([this.getRequest(), this.getUser()]);
     console.log("Personal chanel: ".concat(this.user.id, "Chan"));
     socketio.on("".concat(this.user.id, "Chan"), function (data) {
-      if (norificable === 'granted') {
+      if (notificable === 'granted') {
         var notification = new Notification(data.title, {
           body: data.body,
           icon: data.icon
@@ -62884,6 +62855,7 @@ var render = function () {
                                     ? "default-news.jpeg"
                                     : news.image
                                   : "default-news.jpeg",
+                                alt: news.title,
                               },
                             }),
                           ]
@@ -63818,8 +63790,9 @@ var render = function () {
                                 "a",
                                 {
                                   attrs: {
-                                    href: option[key.value],
+                                    href: "#",
                                     target: "_blank",
+                                    rel: "noopener",
                                   },
                                 },
                                 [_vm._v(_vm._s(option[key.value]))]
@@ -64083,8 +64056,9 @@ var render = function () {
                                     "a",
                                     {
                                       attrs: {
-                                        href: option[key.value],
+                                        href: "#",
                                         target: "_blank",
+                                        rel: "noopener",
                                       },
                                     },
                                     [_vm._v(_vm._s(option[key.value]))]
@@ -64262,8 +64236,9 @@ var render = function () {
                                   "a",
                                   {
                                     attrs: {
-                                      href: option[key.value],
+                                      href: "#",
                                       target: "_blank",
+                                      rel: "noopener",
                                     },
                                   },
                                   [_vm._v(_vm._s(option[key.value]))]
@@ -65454,7 +65429,7 @@ var render = function () {
                 [
                   _c("img", {
                     staticClass: "w-64 h-64 p-3 mx-auto",
-                    attrs: { src: _vm.user_to.avatar },
+                    attrs: { src: _vm.user_to.avatar, alt: "Profile" },
                   }),
                 ]
               ),

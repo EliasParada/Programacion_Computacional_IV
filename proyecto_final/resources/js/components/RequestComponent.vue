@@ -29,20 +29,20 @@
                     this.users = response;
                     this.users = this.users.filter(user => user.id != this.user.id);
                     const friends = Promise.resolve(queries('GET', '/friends'));
-                    friends.then(response => {
+                    friends.then(resfriends => {
                         this.users = this.users.map(user => {
                             user.friend = false;
-                            user.friend = response.find(friend => friend.user_id == user.id || friend.friend_id == user.id) ? true : false;
+                            user.friend = resfriends.find(friend => friend.user_id == user.id || friend.friend_id == user.id) ? true : false;
                             return user;
                         });
                     });
                     const requests = Promise.resolve(queries('GET', '/requests'));
-                    requests.then(response => {
+                    requests.then(resrequests => {
                         this.users = this.users.map(user => {
                             user.request = false;
                             user.me = false;
-                            user.request = response.find(request => request.user_id == user.id || request.friend_id == user.id) ? true : false;
-                            user.me = response.find(request => request.user_id == this.user.id) ? true : false;
+                            user.request = resrequests.find(request => request.user_id == user.id || request.friend_id == user.id) ? true : false;
+                            user.me = resrequests.find(request => request.user_id == this.user.id) ? true : false;
                             return user;
                         });
                     });
@@ -62,7 +62,6 @@
         },
         watch: {
             user_target(newValue) {
-                // this.$emit('input', newValue);
                 console.log(newValue);
             }
         },
@@ -87,6 +86,7 @@
                         break;
                     case 'cancel_request':
                         this.users.find(user => user.id == this.user_target.user_id).me = false;
+                        break;
                     default:
                         break;
                 }

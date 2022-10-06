@@ -10,25 +10,6 @@
         @else
             <a href="#" onclick="openNav('news')" class="text-center text-white hover:text-first-500">Noticias</a>
             <a href="#" onclick="openNav('profiles')" class="text-center text-white hover:text-first-500">Perfiles</a>
-            <!-- Si is_request mostrar un circulo usando animaciones de tailwind -->
-            <!-- <a v-if="is_request" href="#" onclick="openNav('requests')" class="text-center text-white hover:text-first-500">
-                <svg class="h-6 w-6 fill-current text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                    <path d="M10 20a10 10 0 1 1 0-20 10 10 0 0 1 0 20zm-5.6-4.29a9.95 9.95 0 0 1 11.2 0 8 8 0 1 0-11.2 0zm6.12-7.64l3.02-3.02 1.41 1.41-3.02 3.02a2 2 0 1 1-1.41-1.41z"/>
-                </svg>
-            </a> -->
-            <!-- <div class="dropdown">
-                <div class="dropbtn">
-                    <img src="{{ Auth::user()->avatar }}" alt="profile" class="profile w-14 h-14 mx-auto rounded-full">
-                    <p>{{ Auth::user()->name }}</p>
-                </div>
-                <div class="dropdown-content">
-                    <form action="/logout" method="POST">
-                        @csrf
-                        <a href="#" onclick="this.closest('form').submit()">Cerrar Sesion</a>
-                    </form>
-                </div>
-            </div> -->
-            <!-- Alinear esta parte del menu a la derecha -->
             <div class="flex flex-row-reverse">
                 <a href="#" onclick="openNav('requests')" class="relative text-center text-white hover:text-first-500">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white">

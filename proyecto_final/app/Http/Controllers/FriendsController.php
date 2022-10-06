@@ -87,7 +87,6 @@ class FriendsController extends Controller
      */
     public function destroy(Request $request)
     {
-        // return $request->all();
         $friendship = Friends::where('user_id', auth()->id())
             ->where('friend_id', $request->friend_id)
             ->orWhere('user_id', $request->friend_id)

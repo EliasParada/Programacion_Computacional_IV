@@ -16,7 +16,7 @@
                 <div v-if="news.length > 0" class="mb-2">
                     <div v-for="news in news" class="text-black py-2 mb-2 px-auto rounded-lg self-end w-3/3 grid gap-2 grid-cols-3" :key="news.id">
                         <div class="flex flex-col justify-center items-center w-full p-2">
-                            <img class="w-full h-auto mb-2" :src="news.image ? (news.image.endsWith('.mp3') ? 'default-news.jpeg' : (news.image.endsWith('.mp4') ? 'default-news.jpeg' : news.image )) : 'default-news.jpeg'"/>
+                            <img class="w-full h-auto mb-2" :src="news.image ? (news.image.endsWith('.mp3') ? 'default-news.jpeg' : (news.image.endsWith('.mp4') ? 'default-news.jpeg' : news.image )) : 'default-news.jpeg'" :alt="news.title">
                         </div>
                         <span class="text-white text-xs col-span-2 col-start-2">
                             <p class="text-left text-black font-bold block w-full">
@@ -59,11 +59,6 @@
                 windows: {
                     new_news: {open: false},
                 },
-                news: {
-                    user_id: '',
-                    content: '',
-                    multimedia: null
-                }
             }
         },
         methods: {
@@ -83,26 +78,7 @@
             }
         },
         mounted() {
-            if (this.user) {
-                this.isAuthenticated = true;
-                this.news.user_id = this.user.id;
-                this.obtenerNews();
-                if (localStorage.getItem('news')) {
-                    localStorage.removeItem('news');
-                }
-            } else {
-                console.log('no user');
-                this.isAuthenticated = false;
-                let news = JSON.parse(localStorage.getItem('news'));
-                if (!(!news || news.length == 0 || news == '')) {
-                    this.news = news;
-                } else {
-                    this.news = [];
-                }
-            }
-        },
-        beforeMount() {
-            
+            this.obtenerNews();
         },
     }
 </script>

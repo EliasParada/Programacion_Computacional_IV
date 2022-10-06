@@ -10,9 +10,6 @@
         <div id="app">
             <div class="bg-first-900 w-full text-center justify-start text-white p-4 mb-4 flex flex-wrap space-x-6">
                 <a href="/" class="text-center text-white hover:text-first-500">
-                    <!-- <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="hover:stroke-slate-500 mr-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg> -->
                     {{ config('app.name', 'FeelsGood') }}
                 </a>
                 <a href="/login" class="text-center text-white hover:text-first-500">Ingresar</a>
@@ -92,7 +89,7 @@
             </div>
         </div>
         
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.1/socket.io.min.js"></script>
+        <script src="https://cdn.socket.io/4.5.0/socket.io.min.js" integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k" crossorigin="anonymous"></script>
         <script src="{{asset('js/app.js')}}"></script>
     </body>
 </html>

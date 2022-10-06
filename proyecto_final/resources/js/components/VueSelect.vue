@@ -18,7 +18,7 @@
                             <img :src="option[key.value]" :alt="option[key.value]" class="w-16 h-16 rounded-full mr-2">
                         </span>
                         <span v-if="key.type == 'url'">
-                            <a :href="option[key.value]" target="_blank">{{option[key.value]}}</a>
+                            <a href="#" target="_blank" rel="noopener">{{option[key.value]}}</a>
                         </span>
                     </span>
                     <span>
@@ -51,7 +51,7 @@
                             <img :src="option[key.value]" :alt="option[key.value]" class="w-16 h-16 rounded-full mr-2">
                         </span>
                         <span v-if="key.type == 'url'">
-                            <a :href="option[key.value]" target="_blank">{{option[key.value]}}</a>
+                            <a href="#" target="_blank" rel="noopener">{{option[key.value]}}</a>
                         </span>
                     </span>
                 </div>
@@ -143,12 +143,12 @@ export default {
                             Promise.resolve(queries('post', '/friends/delete', {
                                 user_id: this.userby.id,
                                 friend_id: to.id
-                            })).then(res => {
+                            })).then(response => {
                                 console.log('Amigo eliminado');
                             });
                         }
-                        this.$root.$on('confirm', (data) => {
-                            if (data) {
+                        this.$root.$on('confirm', (res) => {
+                            if (res) {
                                 this.openConfirm = false;
                             }
                         });
@@ -176,7 +176,7 @@ export default {
                         Promise.resolve(queries('POST', '/blocks', {
                             user_id: this.userby.id,
                             blocked_id: to.id
-                        })).then(res => {
+                        })).then(response => {
                             Promise.resolve(queries('post', '/friends/delete', {
                                 user_id: this.userby.id,
                                 friend_id: to.id
@@ -187,8 +187,8 @@ export default {
                                 this.mensaje = `${to.name} ha sido bloqueado`;
                                 this.openConfirm = true;
 
-                                this.$root.$on('confirm', (data) => {
-                                    if (data) {
+                                this.$root.$on('confirm', (res2) => {
+                                    if (res2) {
                                         this.openConfirm = false;
                                     }
                                 });
@@ -244,15 +244,16 @@ export default {
             if (label.includes(',')) {
                 newLabel = label.split(',');
                 newLabel = newLabel.map(item => {
-                    return item = this.setResourse(item);
+                    return this.setResourse(item);
                 });
                 return newLabel;
             } else if (label.includes('*')) {
                 newLabel = this.options.map(item, key => {
-                    return item = {
+                    let label = {
                         type: 'txt',
                         value: item[Object.keys(item)[key]],
-                    }
+                    };
+                    return label;
                 });
                 return newLabel;
             } else {

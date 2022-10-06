@@ -24,19 +24,40 @@
             }
         },
         methods: {
+            filterFind(objres, obj, key = 'friend_id', one = false) {
+                if (objres)
+                if (!one) {
+                    if (key == 'friend_id') {
+                        if (objres.find(objfind => objfind.user_id == obj.id || objfind[key] == obj.id))
+                        return true;
+                    } else {
+                        if (objres.find(objfind => objfind.user_id == obj[0].id && objfind[key] == obj[1].id))
+                        return true;
+                    }
+                } else {
+                    if (objres.find(objfind => objfind.user_id == obj.id))
+                    return true;
+                }
+                return false;
+            },
             getUsers() {
                 const users = Promise.resolve(queries('GET', '/users'));
                 users.then(response => {
                     this.users = response;
                     this.users = this.users.filter(user => user.id != this.user.id);
                     const friends = Promise.resolve(queries('GET', '/friends'));
-                    friends.then(response => {
+                    friends.then(resfriends => {
                         this.users = this.users.map(user => {
-                            user.friend = false;
-                            user.friend = response.find(friend => friend.user_id == user.id || friend.friend_id == user.id) ? true : false;
+                            user.friend = this.filterFind(resfriends, user);
                             return user;
                         });
-                        this.friends = response.map(friend => friend.user_id == this.user.id ? friend.friend_id : friend.user_id);
+                        this.friends = resfriends.map(friend => {
+                            if (friend.user_id == this.user.id) {
+                                return friend.friend_id;
+                            } else {
+                                return friend.user_id;
+                            }
+                        });
                         socketio.emit('getFriendsMsg', {
                             friends: this.friends,
                             user: this.user.id
@@ -44,30 +65,27 @@
                         socketio.on('setFriendsMsg', data => {
                             console.log(data, data[0]);
                             this.users.map(user => {
-                                if (data[0].to == user.id || data[0].by == user.id) {
-                                    user.msg = data[0].msg;
+                                let datatemp = data[0];
+                                if (datatemp.to == user.id || datatemp.by == user.id) {
+                                    user.msg = datatemp.msg;
                                 }
                             });
                         });
                     });
                     const requests = Promise.resolve(queries('GET', '/requests'));
-                    requests.then(response => {
+                    requests.then(resrrequests => {
                         this.users = this.users.map(user => {
-                            user.request = false;
-                            user.me = false;
-                            user.request = response.find(request => request.user_id == user.id || request.friend_id == user.id) ? true : false;
-                            user.me = response.find(request => request.user_id == this.user.id) ? true : false;
+                            user.request = this.filterFind(resrrequests, user, 'friend_id');
+                            user.me = this.filterFind(resrrequests, this.user, '', true);
                             return user;
                         });
                     });
                     const blocks = Promise.resolve(queries('GET', '/blocks'));
-                    blocks.then(response => {
-                        console.log('bloqueados',response);
+                    blocks.then(resrblocks => {
+                        console.log('bloqueados',resrblocks);
                         this.users = this.users.map(user => {
-                            user.block_me = false;
-                            user.block_for = false;
-                            user.block_me = response.find(block => block.user_id == this.user.id && block.block_id == user.id) ? true : false;
-                            user.block_for = response.find(block => block.user_id == user.id && block.block_id == this.user.id) ? true : false;
+                            user.block_me = this.filterFind(resrblocks, [this.user, user], 'block_id');
+                            user.block_for = this.filterFind(resrblocks, [user, this.user], 'block_id');
                             return user;
                         });
                     });

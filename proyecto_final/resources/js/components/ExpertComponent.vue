@@ -65,10 +65,5 @@
                 openNav(id);
             }
         },
-        mounted() {
-        },
-        beforeMount() {
-            
-        },
     }
 </script>

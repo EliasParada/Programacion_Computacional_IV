@@ -15,7 +15,7 @@
                             <img :src="option[key.value]" :alt="option[key.value]" class="w-16 h-16 rounded-full mr-2">
                         </span>
                         <span v-if="key.type == 'url'">
-                            <a :href="option[key.value]" target="_blank">{{option[key.value]}}</a>
+                            <a href="#" target="_blank" rel="noopener">{{option[key.value]}}</a>
                         </span>
                     </span>
                 </div>
@@ -77,15 +77,16 @@ export default {
             if (label.includes(',')) {
                 newLabel = label.split(',');
                 newLabel = newLabel.map(item => {
-                    return item = this.setResourse(item);
+                    return this.setResourse(item);
                 });
                 return newLabel;
             } else if (label.includes('*')) {
                 newLabel = this.options.map(item, key => {
-                    return item = {
+                    let label = {
                         type: 'txt',
                         value: item[Object.keys(item)[key]],
-                    }
+                    };
+                    return label;
                 });
                 return newLabel;
             } else {

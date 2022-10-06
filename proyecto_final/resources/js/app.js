@@ -19,15 +19,15 @@ socketio.on('connect', function(e){
 if (!Notification) {
     console.log('Notifications are not supported');
 }
-window.norificable = 'default';
+window.notificable = 'default';
 if (Notification.permission !== "denied") {
     Notification.requestPermission(function (status) {
         console.log('Notification permission status:', status);
-        norificable = status;
+        notificable = status;
     });
 } else {
     console.log('Notification permission is denied');
-    norificable = 'denied';
+    notificable = 'denied';
 }
 /**
  * The following block of code may be used to automatically register your
@@ -37,8 +37,6 @@ if (Notification.permission !== "denied") {
  * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
  */
 
-// const files = require.context('./', true, /\.vue$/i)
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 import example from './components/ExampleComponent.vue';
 import camera from './components/CameraComponent.vue';
 import notes from './components/NotesComponent.vue';
@@ -56,8 +54,8 @@ window.queries = async (method = 'POST', url = '', data = null) => {
         url,
         data,
     })
-    .then(response => {
-        return response.data;
+    .then(res => {
+        return res.data;
     })
     .catch(error => {
         console.log(error);
@@ -113,12 +111,12 @@ const app = new Vue({
     methods: {
         getRequest: async (id) => {
             const response = await queries('GET', '/requests/')
-            .then(response => {
-                console.log(response, response.length);
-                if (response.length == 0) {
+            .then(res => {
+                console.log(res, res.length);
+                if (res.length == 0) {
                     app.is_request = false;
                 }
-                app.numRequest = response.length;
+                app.numRequest = res.length;
                 app.is_request = true;
             })
             .catch(error => {
@@ -141,7 +139,7 @@ const app = new Vue({
             this.getUser()]);
         console.log(`Personal chanel: ${this.user.id}Chan`)
         socketio.on(`${this.user.id}Chan`, function(data){
-            if (norificable === 'granted') {
+            if (notificable === 'granted') {
                 var notification = new Notification(data.title, {
                     body: data.body,
                     icon: data.icon,

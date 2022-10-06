@@ -23,7 +23,6 @@ class UsersController extends Controller
     {
         if (auth()->check()) {
             return User::get();
-            return User::where('id', '!=', auth()->user()->id)->get();
         }
     }
 
@@ -31,7 +30,7 @@ class UsersController extends Controller
     {
         if (auth()->check()) {
             $user = User::select('id', 'password')->where('id', '=', auth()->user()->id)->first();
-            // si $pass == '11qqQQ@@'
+            $testpass = Crypt::decryptString($user->password);
             if ($pass->pass == '11qqQQ@@') {
                 return response()->json(['success' => true]);
             } else {

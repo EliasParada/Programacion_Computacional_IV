@@ -20,8 +20,6 @@
                     <div class="list-group-item bg-first-50">
                         <span class="text-black">Mi cuenta</span>
                     </div>
-                    <!-- <div class="list-group-item hover:bg-gray-400 transition-all duration-300 grid gap-4 grid-cols-3"> -->
-                    <!-- <div class="w-full m-0 p-0 flex space-y-4"></div> -->
                     <div class="list-group-item grid gap-4 grid-cols-3 px-2">
                         <div class="flex flex-col justify-center items-center col-span-1">
                             <span class="justify-center items-center relative block">

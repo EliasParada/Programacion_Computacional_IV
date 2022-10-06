@@ -76,8 +76,8 @@ socketio.on('connection', socket => {
                     {by: data.ids[0], to: data.ids[1]},
                     {by: data.ids[1], to: data.ids[0]}
                 ]
-            }).toArray((err, chat) => {
-                if (err) console.log(err);
+            }).toArray((e, chat) => {
+                if (e) console.log(e);
                 console.log(`${data.ids.join('_')}Chat`);
                 socket.emit(`${data.ids.join('_')}Chat`, chat);
             });
@@ -94,8 +94,8 @@ socketio.on('connection', socket => {
                         {by: data.user, to: friend},
                         {by: friend, to: data.user}
                     ]
-                }).sort({date: -1}).limit(1).toArray((err, chat) => {
-                    if (err) console.log(err);
+                }).sort({date: -1}).limit(1).toArray((e, chat) => {
+                    if (e) console.log(e);
                     console.log(chat);
                     socket.emit('setFriendsMsg', chat);
                 });

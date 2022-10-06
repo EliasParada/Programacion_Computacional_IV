@@ -50,9 +50,10 @@ class ExpertsController extends Controller
         $img = $request->imagen;
         $img = explode(',', $img);
         $imgName = auth()->user()->id.'.png';
-        $path = 'storage/images/titles/'.$imgName;
-        if (!file_exists(public_path('storage/images/titles/'.auth()->user()->id))) {
-            mkdir(public_path('storage/images/titles/'.auth()->user()->id), 0777, true);
+        $root = 'storage/images/titles/';
+        $path = $root.$imgName;
+        if (!file_exists(public_path($root.auth()->user()->id))) {
+            mkdir(public_path($root.auth()->user()->id), 0777, true);
         }
         file_put_contents($path, base64_decode($img[1]));
         $experts->title = $path;

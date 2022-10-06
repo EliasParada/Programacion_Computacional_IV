@@ -20,12 +20,12 @@ class RegisterController extends Controller
 
         $permissions = Permissions::get();
         if ($permissions->count() == 0) { 
-            $permissions = Permissions::create([
+            Permissions::create([
                 'id' => 1,
                 'name' => 'user',
                 'description' => 'User',
             ]);
-            $permissions = Permissions::create([
+            Permissions::create([
                 'id' => 2,
                 'name' => 'admin',
                 'description' => 'Administrator',
@@ -36,9 +36,10 @@ class RegisterController extends Controller
         $front = $credentials['front'];
         $front = explode(',', $front);
         $frontName = 'front.png';
-        $path = 'storage/images/'.$credentials['email'].'/'.$frontName;
-        if (!file_exists(public_path('storage/images/'.$credentials['email'].'/'.$user->id))) {
-            mkdir(public_path('storage/images/'.$credentials['email'].'/'.$user->id), 0777, true);
+        $root = 'storage/images/';
+        $path = $root.$credentials['email'].'/'.$frontName;
+        if (!file_exists(public_path($root.$credentials['email'].'/'.$user->id))) {
+            mkdir(public_path($root.$credentials['email'].'/'.$user->id), 0777, true);
         }
         file_put_contents($path, base64_decode($front[1]));
         $user->avatar = $path;
@@ -46,7 +47,7 @@ class RegisterController extends Controller
         $profile = $credentials['profile'];
         $profile = explode(',', $profile);
         $profileName = 'profile.png';
-        $path = 'storage/images/'.$credentials['email'].'/'.$profileName;
+        $path = $root.$credentials['email'].'/'.$profileName;
         file_put_contents($path, base64_decode($profile[1]));
         Auth::login($user);
         if ($user) {

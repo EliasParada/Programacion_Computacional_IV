@@ -8,7 +8,6 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
-                <!-- <input type="email" class="w-full p-3 rounded-lg" placeholder="Email" v-model="email"> -->
             </div>
             <div class="bg-transparent rounded-lg shadow-lg p-4">
                 <video id="video" class="w-full rounded-lg shadow-lg mb-2" autoplay muted ref="video"></video>
@@ -145,9 +144,6 @@
                 });
                 img.src = canvas.toDataURL();
                 console.log(results);
-                // if (results.filter(r => r.label == 'unknown').length == 0 && results.filter(r => r.label == 'unknown').length == 0) {
-                //     this.$root.$emit('images', true);
-                // }
             },
             findLabels() {
                 const labels = ['front.png', 'profile.png'];
@@ -157,7 +153,6 @@
                     const img = await faceapi.fetchImage(folder + '/' + label);
                     const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
                     console.log(detections);
-                    // descriptions.push(detections.descriptor);
                     if (detections) {
                         descriptions.push(detections.descriptor);
                     }
