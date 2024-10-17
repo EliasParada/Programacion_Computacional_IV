@@ -47,6 +47,7 @@ import setting from './components/SettingsComponent.vue';
 import toast from './components/vToast.vue';
 import expert from './components/ExpertComponent.vue';
 import chat from './components/ChatComponent.vue';
+import * as faceapi from 'face-api.js';
 
 window.queries = async (method = 'POST', url = '', data = null) => {
     const response = await axios({
@@ -95,6 +96,7 @@ const app = new Vue({
         user: null,
         friend: null,
         numRequest: 0,
+        video: null,
     },
     components: {
         'example-component': example,
@@ -132,6 +134,53 @@ const app = new Vue({
             this.user = {id, name, email};
             console.log(this.user);
         },
+        loadModels() {
+            Promise.all([
+                faceapi.nets.tinyFaceDetector.loadFromUri('/storage/models'),
+                faceapi.nets.faceLandmark68Net.loadFromUri('/storage/models'),
+                faceapi.nets.faceRecognitionNet.loadFromUri('/storage/models'),
+                faceapi.nets.faceExpressionNet.loadFromUri('/storage/models'),
+                faceapi.nets.ageGenderNet.loadFromUri('/storage/models'),
+                faceapi.nets.faceExpressionNet.loadFromUri('/storage/models'),
+                faceapi.nets.ssdMobilenetv1.loadFromUri('/storage/models'),
+            ]).then(this.startVideo).catch(err => console.log(err));
+        },
+        startVideo() {
+            const video = this.$refs.analizer;
+            console.log(video, this.$refs.analizer);
+            navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+            console.log(navigator.getUserMedia);
+            if (navigator.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({
+                    video: true
+                }).then(
+                    stream => (video.srcObject = stream),
+                    err => console.log(err)
+                )
+            }
+
+            video.addEventListener('play', function () {
+                setInterval(async () => {
+                    // Detectar rostros y obtener las expresiones
+                    const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceExpressions();
+        
+                    // Asegurarse de que haya detecciones y expresiones
+                    if (detections.length > 0 && detections[0]?.expressions) {
+                        const expressions = detections[0].expressions;
+        
+                        // Obtener la emoción con el valor más alto
+                        const highestEmotion = Object.entries(expressions).reduce((highest, current) => {
+                            return current[1] > highest[1] ? current : highest;
+                        }, ["", -Infinity]);
+        
+                        const [emotion, value] = highestEmotion;
+        
+                        console.log(`Emoción dominante: ${emotion}, Valor: ${value}`);
+                    }
+                }, 100);
+            
+            });
+        },
     },
     mounted() {
         Promise.all([
@@ -150,6 +199,7 @@ const app = new Vue({
                 }
             }
         });
+        this.loadModels();
     },
     beforeMount() {
         this.$root.$on('images', (value) => {

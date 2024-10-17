@@ -19,6 +19,9 @@
                     <span>{{note.content.substring(0, 150)}}<span v-if="note.content.length > 150">...</span></span>
                     <a href="#" class="bg-first-900 hover:bg-first-500 text-white font-bold w-8 h-8 rounded-lg mr-4 p-1" @click="openNote(note)">Abrir</a>
                 </div>
+                <div v-if="assistantMessage" class="bg-blue-100 p-4 rounded-md shadow-md">
+                    <p class="text-blue-700">{{ assistantMessage }}</p>
+                </div>
             </div>
         </div>
     </div>
@@ -46,7 +49,8 @@
                     user_id: '',
                     content: '',
                     multimedia: null
-                }
+                },
+                assistantMessage: '',
             }
         },
         methods: {
@@ -70,7 +74,13 @@
                 .then(response => {
                     this.notes = response;
                 });
-            }
+            },
+            // async submitNote() {
+            //     const response = await queries('POST', '/notes', this.note);
+            //     this.notes.push(response.note);
+            //     this.assistantMessage = response.assistant_message;
+            // }
+
         },
         mounted() {
             if (this.user) {
@@ -103,6 +113,7 @@
                     Promise.resolve(queries('POST', '/notes', this.note))
                     .then(response => {
                         this.obtenerNotas();
+                        this.assistantMessage = response.assistant_message;
                     });
                 } else {
                     this.notes.push({

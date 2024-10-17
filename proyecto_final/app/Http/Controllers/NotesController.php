@@ -4,9 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Notes;
 use Illuminate\Http\Request;
+use App\Services\MentalHealthAssistant;
 
 class NotesController extends Controller
 {
+    protected $assistant;
+
+    // Inyectar el servicio en el constructor del controlador
+    public function __construct(MentalHealthAssistant $assistant)
+    {
+        $this->assistant = $assistant;
+    }
+    
     /**
      * Display a listing of the resource.
      *
@@ -40,7 +49,11 @@ class NotesController extends Controller
     {
         if (auth()->check() && auth()->user()->id == $request->user_id) {
             Notes::create($request->all());
-            return json_encode(['success' => true]);
+            $response = $this->assistant->generateResponse($request['content'], $request->user_id);
+            return json_encode([
+                'success' => true,
+                'assistant_message' => $response,
+            ]);
         }
     }
 
