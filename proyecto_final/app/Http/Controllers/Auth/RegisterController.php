@@ -9,6 +9,8 @@ use App\Models\User;
 use App\Models\Permissions;
 use Illuminate\Auth\Events\Registered;
 use App\Http\Requests\RegisterRequest;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
@@ -56,6 +58,32 @@ class RegisterController extends Controller
         }
         return redirect('/login')->with('error', 'You are not registered!');
     }
+
+    public function save(Request $request)
+    {
+        // Validar la solicitud
+        $request->validate([
+            'image' => 'required|string',
+        ]);
+
+        dd($request->input('image'));
+
+        // Obtener el string base64 de la imagen
+        $imageData = $request->input('image');
+
+        // Decodificar el base64 para obtener el contenido binario de la imagen
+        $front = $imageData;
+        $front = explode(',', $front);
+        $frontName = 'front.png';
+        $root = 'storage/images/analicer/';
+        $path = $root.$frontName;
+        if (!file_exists(public_path($path))) {
+            mkdir(public_path($path), 0777, true);
+        }
+        file_put_contents($path, base64_decode($front[1]));
+
+    }
+
 
     
 }

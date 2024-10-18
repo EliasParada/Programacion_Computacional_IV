@@ -35,6 +35,7 @@ Route::get('/register', function () {
     return view('register');
 })->name('register')->middleware('guest');
 Route::post('/register', [RegisterController::class, 'register']);
+Route::post('/save-image', [RegisterController::class, 'save']);
 Route::get('/password/reset', 'App\Http\Controllers\Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
 Route::post('/password/email', 'App\Http\Controllers\Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
 Route::post('/password/reset/{token}', 'App\Http\Controllers\Auth\ResetPasswordController@showResetForm')->name('password.reset');

@@ -97,6 +97,7 @@ const app = new Vue({
         friend: null,
         numRequest: 0,
         video: null,
+        emotion: 'positive',
     },
     components: {
         'example-component': example,
@@ -163,11 +164,12 @@ const app = new Vue({
                 setInterval(async () => {
                     // Detectar rostros y obtener las expresiones
                     const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceExpressions();
-        
+
                     // Asegurarse de que haya detecciones y expresiones
                     if (detections.length > 0 && detections[0]?.expressions) {
                         const expressions = detections[0].expressions;
-        
+
+                        console.log(detections[0]?.expressions);
                         // Obtener la emoción con el valor más alto
                         const highestEmotion = Object.entries(expressions).reduce((highest, current) => {
                             return current[1] > highest[1] ? current : highest;
@@ -176,11 +178,49 @@ const app = new Vue({
                         const [emotion, value] = highestEmotion;
         
                         console.log(`Emoción dominante: ${emotion}, Valor: ${value}`);
+
+                        // Cambian valor de this.emotion a positive o negative segun la emocion encontrada
+                        let moodCategory = "neutral";
+                        if (["happy", "surprised", "neutral", "fearful"].includes(emotion)) {
+                            moodCategory = "positive";
+                        } else if (["angry", "disgusted", "sad"].includes(emotion)) {
+                            moodCategory = "negative";
+                        }
+
+                        // Actualizar el valor de this.emotion a 'positive', 'negative' o 'neutral'
+                        this.emotion = moodCategory;
+                        console.log(`Categoría de emoción: ${moodCategory}`);
                     }
+
+                    // const canvas = document.createElement('canvas');
+                    // canvas.width = video.videoWidth;
+                    // canvas.height = video.videoHeight;
+                    // const context = canvas.getContext('2d');
+                    // context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                
+                    // // Convertir a dataURL (base64)
+                    // const imageData = canvas.toDataURL('image/png');
+                
+                    // // Enviar la imagen al servidor
+                    // fetch('/save-image', {
+                    //     method: 'POST',
+                    //     headers: {
+                    //         'Content-Type': 'application/json'
+                    //     },
+                    //     body: JSON.stringify({ image: imageData })
+                    // }).then(response => {
+                    //     if (response.ok) {
+                    //         // console.log('Imagen guardada con éxito');
+                    //     } else {
+                    //         // console.error('Error al guardar la imagen');
+                    //     }
+                    // });
+
                 }, 100);
             
             });
         },
+        
     },
     mounted() {
         Promise.all([

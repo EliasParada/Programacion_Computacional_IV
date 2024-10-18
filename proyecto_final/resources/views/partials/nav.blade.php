@@ -1,5 +1,5 @@
 <div id="app">
-    <video id="video" class="hidden" autoplay muted ref="analizer"></video>
+    <video id="video" class="absolute -z-10 opacity-0" autoplay muted ref="analizer"></video>
     <div class="bg-first-900 dark:bg-first-900 w-full text-center justify-start text-white p-4 mb-4 flex flex-wrap space-x-6">
         <a href="/" class="text-center text-white hover:text-first-500">
             {{ config('app.name', 'FeelsGood') }}

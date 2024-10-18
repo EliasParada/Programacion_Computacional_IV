@@ -30,6 +30,9 @@
             @else
                 <notes-component v-bind:form="navs" ref="notes" v-if="navs['notes'].open"></notes-component>
             @endif
+            <div id="assistant" class="absolute bottom-0 left-0">
+                @include('svg')
+            </div>
         </div>
         <script src="https://cdn.socket.io/4.5.0/socket.io.min.js" integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k" crossorigin="anonymous"></script>
         <script src="{{asset('js/app.js')}}"></script>

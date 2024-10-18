@@ -24541,7 +24541,8 @@ var app = new Vue({
     user: null,
     friend: null,
     numRequest: 0,
-    video: null
+    video: null,
+    emotion: 'positive'
   },
   components: {
     'example-component': _components_ExampleComponent_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
@@ -24629,10 +24630,12 @@ var app = new Vue({
       }
 
       video.addEventListener('play', function () {
+        var _this = this;
+
         setInterval( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3() {
           var _detections$;
 
-          var detections, expressions, highestEmotion, _highestEmotion, emotion, value;
+          var detections, _detections$2, expressions, highestEmotion, _highestEmotion, emotion, value, moodCategory;
 
           return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
             while (1) {
@@ -24646,14 +24649,48 @@ var app = new Vue({
 
                   // Asegurarse de que haya detecciones y expresiones
                   if (detections.length > 0 && (_detections$ = detections[0]) !== null && _detections$ !== void 0 && _detections$.expressions) {
-                    expressions = detections[0].expressions; // Obtener la emoción con el valor más alto
+                    expressions = detections[0].expressions;
+                    console.log((_detections$2 = detections[0]) === null || _detections$2 === void 0 ? void 0 : _detections$2.expressions); // Obtener la emoción con el valor más alto
 
                     highestEmotion = Object.entries(expressions).reduce(function (highest, current) {
                       return current[1] > highest[1] ? current : highest;
                     }, ["", -Infinity]);
                     _highestEmotion = _slicedToArray(highestEmotion, 2), emotion = _highestEmotion[0], value = _highestEmotion[1];
-                    console.log("Emoci\xF3n dominante: ".concat(emotion, ", Valor: ").concat(value));
-                  }
+                    console.log("Emoci\xF3n dominante: ".concat(emotion, ", Valor: ").concat(value)); // Cambian valor de this.emotion a positive o negative segun la emocion encontrada
+
+                    moodCategory = "neutral";
+
+                    if (["happy", "surprised", "neutral", "fearful"].includes(emotion)) {
+                      moodCategory = "positive";
+                    } else if (["angry", "disgusted", "sad"].includes(emotion)) {
+                      moodCategory = "negative";
+                    } // Actualizar el valor de this.emotion a 'positive', 'negative' o 'neutral'
+
+
+                    _this.emotion = moodCategory;
+                    console.log("Categor\xEDa de emoci\xF3n: ".concat(moodCategory));
+                  } // const canvas = document.createElement('canvas');
+                  // canvas.width = video.videoWidth;
+                  // canvas.height = video.videoHeight;
+                  // const context = canvas.getContext('2d');
+                  // context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                  // // Convertir a dataURL (base64)
+                  // const imageData = canvas.toDataURL('image/png');
+                  // // Enviar la imagen al servidor
+                  // fetch('/save-image', {
+                  //     method: 'POST',
+                  //     headers: {
+                  //         'Content-Type': 'application/json'
+                  //     },
+                  //     body: JSON.stringify({ image: imageData })
+                  // }).then(response => {
+                  //     if (response.ok) {
+                  //         // console.log('Imagen guardada con éxito');
+                  //     } else {
+                  //         // console.error('Error al guardar la imagen');
+                  //     }
+                  // });
+
 
                 case 4:
                 case "end":
@@ -24683,18 +24720,18 @@ var app = new Vue({
     this.loadModels();
   },
   beforeMount: function beforeMount() {
-    var _this = this;
+    var _this2 = this;
 
     this.$root.$on('images', function (value) {
-      _this.front = value.front;
-      _this.profile = value.profile;
-      _this.navs.camera.open = false;
+      _this2.front = value.front;
+      _this2.profile = value.profile;
+      _this2.navs.camera.open = false;
     });
     this.$root.$on('close', function (value) {
-      _this.navs[value].open = false;
+      _this2.navs[value].open = false;
     });
     this.$root.$on('go_chat', function (value) {
-      _this.friend = value;
+      _this2.friend = value;
       openNav('chat');
     });
   }
